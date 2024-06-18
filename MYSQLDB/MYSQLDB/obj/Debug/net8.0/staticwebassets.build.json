@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "qQSg1690/eQvZBa2R2/tfVCnMjNXU25a7gqVyY5moS8=",
+  "Source": "MYSQLDB",
+  "BasePath": "_content/MYSQLDB",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
