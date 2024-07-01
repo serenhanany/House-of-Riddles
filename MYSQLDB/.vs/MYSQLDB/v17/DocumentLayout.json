@@ -1,21 +1,21 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\",
+  "WorkspaceRootPath": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\desktop\\mysqldb\\mysqldb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\win10\\desktop\\house-of-riddles\\house-of-riddles\\mysqldb\\mysqldb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|solutionrelative:mysqldb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\desktop\\mysqldb\\mysqldb\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\win10\\desktop\\house-of-riddles\\house-of-riddles\\mysqldb\\mysqldb\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|solutionrelative:mysqldb\\usermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\desktop\\mysqldb\\mysqldb\\usercontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\win10\\desktop\\house-of-riddles\\house-of-riddles\\mysqldb\\mysqldb\\usercontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|solutionrelative:mysqldb\\usercontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\desktop\\mysqldb\\mysqldb\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|c:\\users\\win10\\desktop\\house-of-riddles\\house-of-riddles\\mysqldb\\mysqldb\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EF6682F6-1A3B-4264-ADC8-A74959CD77BB}|MYSQLDB\\MYSQLDB.csproj|solutionrelative:mysqldb\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -32,11 +32,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\Program.cs",
               "RelativeDocumentMoniker": "MYSQLDB\\Program.cs",
-              "ToolTip": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\Program.cs",
+              "ToolTip": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\Program.cs",
               "RelativeToolTip": "MYSQLDB\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAIwBEAAAAnAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-17T16:02:53.405Z",
               "EditorCaption": ""
@@ -45,40 +45,37 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "UsersController.cs",
-              "DocumentMoniker": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\Controllers\\UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\Controllers\\UsersController.cs",
               "RelativeDocumentMoniker": "MYSQLDB\\Controllers\\UsersController.cs",
-              "ToolTip": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\Controllers\\UsersController.cs",
               "RelativeToolTip": "MYSQLDB\\Controllers\\UsersController.cs",
               "ViewState": "AQIAAAcAAAAAAAAAAAAwwBcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-17T15:58:03.366Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-17T15:58:03.366Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "UserContext.cs",
-              "DocumentMoniker": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\UserContext.cs",
+              "DocumentMoniker": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\UserContext.cs",
               "RelativeDocumentMoniker": "MYSQLDB\\UserContext.cs",
-              "ToolTip": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\UserContext.cs",
+              "ToolTip": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\UserContext.cs",
               "RelativeToolTip": "MYSQLDB\\UserContext.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-17T15:51:22.951Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-17T15:51:22.951Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "UserModel.cs",
-              "DocumentMoniker": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\UserModel.cs",
+              "DocumentMoniker": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\UserModel.cs",
               "RelativeDocumentMoniker": "MYSQLDB\\UserModel.cs",
-              "ToolTip": "C:\\Users\\\u05E1\u05D9\u05E8\u05D9\u05DF\\Desktop\\MYSQLDB\\MYSQLDB\\UserModel.cs",
+              "ToolTip": "C:\\Users\\win10\\Desktop\\House-Of-Riddles\\House-of-Riddles\\MYSQLDB\\MYSQLDB\\UserModel.cs",
               "RelativeToolTip": "MYSQLDB\\UserModel.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAsAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-17T15:50:24.17Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-17T15:50:24.17Z"
             }
           ]
         }
