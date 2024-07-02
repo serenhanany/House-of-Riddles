@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "403166462634",
+    "project_id": "houseofriddells",
+    "storage_bucket": "houseofriddells.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:403166462634:android:81ff795f8c5d05550086d3",
+        "android_client_info": {
+          "package_name": "com.iss.firebasetuto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1ZxKMA4BslDOomEErx2M2-JKg1kMmm1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
