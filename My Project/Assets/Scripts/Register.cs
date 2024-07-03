@@ -4,6 +4,8 @@ using System.Collections;
 using System.Text;
 using UnityEngine.Networking;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class RegisterScript : MonoBehaviour
 {
@@ -72,7 +74,9 @@ public class RegisterScript : MonoBehaviour
         else
         {
             Debug.Log("User registered successfully!");
+            SceneManager.LoadScene("Login");
         }
+        
 
     }
 }
