@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Mirror;
 
 
 public class RegisterScript : MonoBehaviour
@@ -16,12 +17,20 @@ public class RegisterScript : MonoBehaviour
     public TMP_InputField studyField;
     public Button registerButton;
     public TMP_Text messageText;
+    public Button HomePageButton;
 
     void Start()
     {
         registerButton.onClick.AddListener(() => StartCoroutine(RegisterUser()));
+        if (HomePageButton != null)
+        {
+            HomePageButton.onClick.AddListener(HomePageScene);
+        }
     }
-
+    public void HomePageScene()
+    {
+        SceneManager.LoadScene("HomePage");
+    }
     IEnumerator RegisterUser()
     {
         string url = "https://localhost:7096/api/users/register";

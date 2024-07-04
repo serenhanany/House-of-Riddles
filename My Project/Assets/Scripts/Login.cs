@@ -12,13 +12,21 @@ public class LoginScript : MonoBehaviour
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
     public Button loginButton;
+    public Button HomePageButton;
     public TMP_Text messageText;
 
     void Start()
     {
         loginButton.onClick.AddListener(() => StartCoroutine(LoginUser()));
+        if (HomePageButton != null)
+        {
+            HomePageButton.onClick.AddListener(HomePageScene);
+        }
     }
-
+    public void HomePageScene()
+    {
+        SceneManager.LoadScene("HomePage");
+    }
     IEnumerator LoginUser()
     {
         string url = "https://localhost:7096/api/users/login";
