@@ -161,8 +161,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000015259, y: 0.00097275}
-  m_SizeDelta: {x: 880.4, y: 386}
+  m_AnchoredPosition: {x: 0.000018119, y: 0.000090122}
+  m_SizeDelta: {x: 915.6, y: 390.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8640647
 MonoBehaviour:
@@ -719,7 +719,7 @@ GameObject:
   - component: {fileID: 366166348}
   - component: {fileID: 366166347}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: ButtonNo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -840,7 +840,7 @@ GameObject:
   - component: {fileID: 900876938}
   - component: {fileID: 900876937}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ButtonYes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1161,6 +1161,7 @@ GameObject:
   - component: {fileID: 2064168060}
   - component: {fileID: 2064168059}
   - component: {fileID: 2064168058}
+  - component: {fileID: 2064168061}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1242,6 +1243,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2064168061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064168057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af3f606d73454a74f9c44aeb5a6cb9dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  YesButton: {fileID: 900876937}
+  NoButton: {fileID: 366166347}
 --- !u!1 &2065384542
 GameObject:
   m_ObjectHideFlags: 0

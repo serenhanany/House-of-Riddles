@@ -5,15 +5,18 @@ using System.Text;
 using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.EventSystems;
 
 public class LoginScript : MonoBehaviour
 {
+   
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
     public Button loginButton;
     public Button HomePageButton;
+    public Button createAccountButton;
     public TMP_Text messageText;
+    
 
     void Start()
     {
@@ -22,6 +25,15 @@ public class LoginScript : MonoBehaviour
         {
             HomePageButton.onClick.AddListener(HomePageScene);
         }
+        if (createAccountButton != null)
+        {
+            // Add a listener to the button's click event
+            createAccountButton.onClick.AddListener(createAccountScene);
+        }
+    }
+    public void createAccountScene()
+    {
+        SceneManager.LoadScene("Register");
     }
     public void HomePageScene()
     {
