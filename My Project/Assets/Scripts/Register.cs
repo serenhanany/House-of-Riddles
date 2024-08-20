@@ -13,6 +13,7 @@ public class RegisterScript : MonoBehaviour
     public TMP_InputField fullnameField;
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
+    public TMP_InputField emailField;
     public TMP_InputField ageField;
     public TMP_InputField studyField;
     public Button registerButton;
@@ -41,9 +42,11 @@ public class RegisterScript : MonoBehaviour
         string age = ageField.text;
         string study = studyField.text;
         string fullname = fullnameField.text;
+        string email = emailField.text;
+       
 
         // Check if any field is empty
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullname) || string.IsNullOrEmpty(age) || string.IsNullOrEmpty(study))
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullname) || string.IsNullOrEmpty(age) || string.IsNullOrEmpty(study))
         {
             // Show error message
             messageText.text = "Please fill in all fields.";
@@ -60,7 +63,7 @@ public class RegisterScript : MonoBehaviour
         }
 
         // Create the user object
-        UserModel user = new UserModel { Username = username, Password = password, Fullname=fullname,Age=age,Study=study };
+        UserModel user = new UserModel { Username = username, Password = password, Fullname=fullname,Age=age,Study=study,Email=email };
 
         // Convert the user object to JSON
         string json = JsonUtility.ToJson(user);
@@ -98,4 +101,5 @@ public class UserModel
     public string Fullname;
     public string Age;
     public string Study;
+    public string Email;
 }
