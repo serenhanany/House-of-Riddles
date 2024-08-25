@@ -42,7 +42,8 @@ public class LoginScript : MonoBehaviour
     }
     IEnumerator LoginUser()
     {
-        string url = "https://localhost:7096/api/users/login";
+        //string url = "http://localhost:5093";
+       string url = "https://localhost:7096/api/users/login";
         Debug.Log("Connecting to URL: " + url);
         messageText.text = "";
         string username = usernameField.text;
@@ -86,7 +87,8 @@ public class LoginScript : MonoBehaviour
             {
                 Debug.Log("Login successful!");
                 messageText.text = "Login successful!";
-                SceneManager.LoadScene("Game");
+                SceneManager.LoadScene("textControl");
+                //createAccountButton.onClick.AddListener(createAccountScene);
                 // Handle successful login (e.g., navigate to the main game scene)
             }
             else

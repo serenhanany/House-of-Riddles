@@ -8,9 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
+// Add Swagger for API documentation
+builder.Services.AddSwaggerGen();
+
 // Add DbContext using MySQL
 builder.Services.AddDbContext<UserContext>(options =>
-    options.UseMySql("server=LocalHost;database=mydatabase;user=root;password=Seren2807",
+    options.UseMySql("server=localhost;database=mydatabase;user=root;password=Seren2807",
         new MySqlServerVersion(new Version(8, 0, 21))));
 
 var app = builder.Build();
@@ -19,6 +22,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+
+    // Enable middleware to serve generated Swagger as a JSON endpoint.
+    app.UseSwagger();
+
+    // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+    // specifying the Swagger JSON endpoint.
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
 }
 
 app.UseRouting();

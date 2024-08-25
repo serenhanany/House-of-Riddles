@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Mirror;
+using static System.Net.WebRequestMethods;
 
 
 public class RegisterScript : MonoBehaviour
@@ -34,6 +35,7 @@ public class RegisterScript : MonoBehaviour
     }
     IEnumerator RegisterUser()
     {
+        //string url = "http://localhost:5093";
         string url = "https://localhost:7096/api/users/register";
         Debug.Log("Connecting to URL: " + url);
 
@@ -69,7 +71,7 @@ public class RegisterScript : MonoBehaviour
         string json = JsonUtility.ToJson(user);
 
         // Set up the UnityWebRequest
-        UnityWebRequest request = new UnityWebRequest("https://LocalHost:7096/api/users/register", "POST");
+        UnityWebRequest request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
