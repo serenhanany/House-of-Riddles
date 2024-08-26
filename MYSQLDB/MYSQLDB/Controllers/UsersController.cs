@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MYSQLDB;
+using MYSQLDB.Controllers;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,22 +72,9 @@ public class UsersController : ControllerBase
     }
 
 
-    /* [HttpGet("getQuestion")]
-     public async Task<IActionResult> GetQuestion(int questionId)
-     {
-         var question = await _context.Questions
-             .FirstOrDefaultAsync(q => q.Id == questionId);
-
-         if (question == null)
-         {
-             return NotFound(new { Message = "Question not found" });
-         }
-         Debug.WriteLine($"Question: {question.QuestionText}");
-         Debug.WriteLine($"Question: {question.AnswerOption1}");
-         return Ok(question);
-     }*/
-    [HttpGet("getQuestion")]
-    public async Task<IActionResult> GetQuestion(int playerLevel)
+   
+   // [HttpGet("getQuestion")]
+    /*public async Task<IActionResult> GetQuestion(int playerLevel)
     {
         var questions = await _context.Questions
                                       .Where(q => q.DifficultyLevel == GetDifficultyLevel(playerLevel))
@@ -98,7 +86,51 @@ public class UsersController : ControllerBase
         }
 
         return Ok(questions);
+    }*/
+    [HttpGet("getQuestion")]
+    public async Task<IActionResult> GetQuestion(int playerId, int playerLevel)
+    {
+        // Get the list of questions the player has already answered
+        var answeredQuestionIds = await _context.PlayerAnsweredQuestions
+                                                .Where(paq => paq.UserId == playerId)
+                                                .Select(paq => paq.QuestionId)
+                                                .ToListAsync();
+
+        // Fetch questions that match the player's level and have not been answered
+        var questions = await _context.Questions
+                                      .Where(q => q.DifficultyLevel == GetDifficultyLevel(playerLevel) &&
+                                                  !answeredQuestionIds.Contains(q.Id))
+                                      .ToListAsync();
+
+        if (questions == null || questions.Count == 0)
+        {
+            return NotFound(new { Message = "No questions found for this level" });
+        }
+
+        return Ok(questions);
     }
+    [HttpPost("recordAnswer")]
+    public async Task<IActionResult> RecordAnswer(int userId, int questionId, bool isCorrect)
+    {
+        try
+        {
+            var record = new PlayerAnsweredQuestionModel
+            {
+                UserId = userId,
+                QuestionId = questionId
+            };
+
+            _context.PlayerAnsweredQuestions.Add(record);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Answer recorded successfully" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
+    }
+
 
     private string GetDifficultyLevel(int playerLevel)
     {

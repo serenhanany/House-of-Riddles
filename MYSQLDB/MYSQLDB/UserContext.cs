@@ -8,6 +8,7 @@ public class UserContext : DbContext
 
     public DbSet<UserModel> Users { get; set; }
     public DbSet<QuestionModel> Questions { get; set; }
+    public DbSet<PlayerAnsweredQuestionModel> PlayerAnsweredQuestions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
