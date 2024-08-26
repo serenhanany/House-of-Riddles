@@ -5,18 +5,17 @@ using System.Text;
 using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
+using Newtonsoft.Json;
+
 
 public class LoginScript : MonoBehaviour
 {
-   
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
     public Button loginButton;
     public Button HomePageButton;
     public Button createAccountButton;
     public TMP_Text messageText;
-    
 
     void Start()
     {
@@ -28,53 +27,47 @@ public class LoginScript : MonoBehaviour
         }
         if (createAccountButton != null)
         {
-            // Add a listener to the button's click event
             createAccountButton.onClick.AddListener(createAccountScene);
         }
     }
+
     public void createAccountScene()
     {
         SceneManager.LoadScene("Register");
     }
+
     public void HomePageScene()
     {
         SceneManager.LoadScene("HomePage");
     }
+
     IEnumerator LoginUser()
     {
-        //string url = "http://localhost:5093";
-       string url = "https://localhost:7096/api/users/login";
+        string url = "https://localhost:7096/api/users/login";
         Debug.Log("Connecting to URL: " + url);
         messageText.text = "";
+
         string username = usernameField.text;
         string password = passwordField.text;
 
-        // Check if any field is empty
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {
-            // Show error message
             messageText.text = "Please fill in all fields.";
-            yield break; // Exit coroutine
+            yield break;
         }
 
-        // Create the login object
         LoginModel login = new LoginModel { Username = username, Password = password };
-
-        // Convert the login object to JSON
         string json = JsonUtility.ToJson(login);
         Debug.Log("JSON to be sent: " + json);
 
-        // Set up the UnityWebRequest
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
-        // Send the request
         yield return request.SendWebRequest();
 
-        // Check for errors
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error: " + request.error);
@@ -87,9 +80,31 @@ public class LoginScript : MonoBehaviour
             {
                 Debug.Log("Login successful!");
                 messageText.text = "Login successful!";
-                SceneManager.LoadScene("textControl");
-                //createAccountButton.onClick.AddListener(createAccountScene);
-                // Handle successful login (e.g., navigate to the main game scene)
+
+                // Parse the server response and store the player data
+                LoginResponse response = JsonConvert.DeserializeObject<LoginResponse>(request.downloadHandler.text);
+
+                if (response != null)
+                {
+                    Debug.Log($"Username: {response.Username}, UserId: {response.UserId}, Level: {response.Level}");
+
+                    // Store the player data in PlayerData
+                    if (PlayerData.Instance != null)
+                    {
+                        PlayerData.Instance.SetPlayerData(response.UserId, response.Username, response.Level);
+
+                        // Navigate to the next scene
+                        SceneManager.LoadScene("questiontest");
+                    }
+                    else
+                    {
+                        Debug.LogError("PlayerData.Instance is null. Ensure PlayerData is initialized.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Failed to parse JSON into LoginResponse. Response was null.");
+                }
             }
             else
             {
@@ -106,3 +121,13 @@ public class LoginModel
     public string Username;
     public string Password;
 }
+
+[System.Serializable]
+public class LoginResponse
+{
+    public int UserId;
+    public string Username;
+    public int Level;
+    public string Message;  // If you want to handle the message as well
+}
+
