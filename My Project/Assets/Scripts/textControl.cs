@@ -10,16 +10,17 @@ using Newtonsoft.Json;
 
 
 
-
 public class textControl : MonoBehaviour
 {
     public TMP_Text questionText;
     public Button[] optionButtons;
     public TMP_Text scoreText;
+
     private int playerScore = 0;
     private int playerLevel = 1;
-    private int currentQuestionIndex = 0;  // Track the current question
-    private List<QuestionModel> questions;  // Store the list of questions for the current level
+    private int currentQuestionIndex = 0;
+    private List<QuestionModel> questions;
+    private HashSet<int> answeredQuestionIds = new HashSet<int>();  // Track answered questions
     private string apiUrl = "https://localhost:7096/api/Users/getQuestion";
 
     void Start()
@@ -50,13 +51,34 @@ public class textControl : MonoBehaviour
                 if (questions != null && questions.Count > 0)
                 {
                     currentQuestionIndex = 0;  // Start with the first question
-                    DisplayQuestion(questions[currentQuestionIndex]);
+                    DisplayNextUnansweredQuestion();
                 }
                 else
                 {
                     UnityEngine.Debug.LogError("No questions found for this level.");
                 }
             }
+        }
+    }
+
+    void DisplayNextUnansweredQuestion()
+    {
+        // Loop through the questions to find one that hasn't been answered
+        while (currentQuestionIndex < questions.Count && answeredQuestionIds.Contains(questions[currentQuestionIndex].Id))
+        {
+            UnityEngine.Debug.Log("Skipping question with ID: " + questions[currentQuestionIndex].Id);
+            currentQuestionIndex++;
+        }
+
+        if (currentQuestionIndex < questions.Count)
+        {
+            UnityEngine.Debug.Log("Displaying question with ID: " + questions[currentQuestionIndex].Id);
+            DisplayQuestion(questions[currentQuestionIndex]);
+        }
+        else
+        {
+            UnityEngine.Debug.Log("All questions at this level have been answered.");
+            CheckLevelUp();  // Handle level up or end of quiz
         }
     }
 
@@ -69,26 +91,36 @@ public class textControl : MonoBehaviour
         optionButtons[3].GetComponentInChildren<TMP_Text>().text = question.AnswerOption4;
 
         // Remove old listeners
-        optionButtons[0].onClick.RemoveAllListeners();
-        optionButtons[1].onClick.RemoveAllListeners();
-        optionButtons[2].onClick.RemoveAllListeners();
-        optionButtons[3].onClick.RemoveAllListeners();
+        foreach (Button button in optionButtons)
+        {
+            button.onClick.RemoveAllListeners();
+        }
 
         // Add new listeners
-        optionButtons[0].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption1, question.CorrectAnswer));
-        optionButtons[1].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption2, question.CorrectAnswer));
-        optionButtons[2].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption3, question.CorrectAnswer));
-        optionButtons[3].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption4, question.CorrectAnswer));
+        optionButtons[0].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption1, question.CorrectAnswer, question.Id));
+        optionButtons[1].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption2, question.CorrectAnswer, question.Id));
+        optionButtons[2].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption3, question.CorrectAnswer, question.Id));
+        optionButtons[3].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption4, question.CorrectAnswer, question.Id));
     }
 
-    void OnAnswerSelected(string selectedAnswer, string correctAnswer)
+    void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
     {
         if (selectedAnswer == correctAnswer)
         {
             UnityEngine.Debug.Log("Correct Answer!");
             playerScore += 10;  // Increase score
             UpdateScoreText();
-            CheckLevelUp();
+
+            // Track the answered question locally
+            if (!answeredQuestionIds.Contains(questionId))
+            {
+                answeredQuestionIds.Add(questionId);
+                UnityEngine.Debug.Log("Added question ID to answered list: " + questionId);
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("Question ID already in answered list: " + questionId);
+            }
         }
         else
         {
@@ -96,18 +128,8 @@ public class textControl : MonoBehaviour
         }
 
         currentQuestionIndex++;
-        if (currentQuestionIndex < questions.Count)
-        {
-            DisplayQuestion(questions[currentQuestionIndex]);  // Display next question
-        }
-        else
-        {
-            UnityEngine.Debug.Log("No more questions. Leveling up!");
-            CheckLevelUp();  // Handle level up or end of quiz
-        }
+        DisplayNextUnansweredQuestion();  // Display the next unanswered question
     }
-
-   
 
     void UpdateScoreText()
     {
@@ -160,12 +182,7 @@ public class textControl : MonoBehaviour
             }
         }
     }
-
-
-
-
 }
-
 
 
 [System.Serializable]
