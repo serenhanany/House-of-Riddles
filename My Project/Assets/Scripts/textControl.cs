@@ -8,16 +8,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using Newtonsoft.Json;
 
-
-
 public class textControl : MonoBehaviour
 {
     public TMP_Text questionText;
     public Button[] optionButtons;
     public TMP_Text scoreText;
-
+    private float questionStartTime;
     private int playerScore = 0;
-    private int playerLevel = 1;
+    private int playerLevel;
     private int currentQuestionIndex = 0;
     private List<QuestionModel> questions;
     private HashSet<int> answeredQuestionIds = new HashSet<int>();  // Track answered questions
@@ -25,6 +23,7 @@ public class textControl : MonoBehaviour
 
     void Start()
     {
+        playerLevel = PlayerData.Instance.playerLevel;
         StartCoroutine(GetQuestionsForLevel(playerLevel));
         UpdateScoreText();
     }
@@ -84,6 +83,11 @@ public class textControl : MonoBehaviour
 
     void DisplayQuestion(QuestionModel question)
     {
+        questionStartTime = Time.time;  // Start tracking time
+        PlayerData.Instance.TimeSpentOnCurrentQuestion = 0;
+        PlayerData.Instance.CurrentQuestionAttempts = 0;  // Reset attempts
+        PlayerData.Instance.HintGiven = false;  // Reset hint status
+
         questionText.text = question.QuestionText;
         optionButtons[0].GetComponentInChildren<TMP_Text>().text = question.AnswerOption1;
         optionButtons[1].GetComponentInChildren<TMP_Text>().text = question.AnswerOption2;
@@ -105,7 +109,16 @@ public class textControl : MonoBehaviour
 
     void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
     {
-        if (selectedAnswer == correctAnswer)
+        // Calculate the time spent on the current question
+        PlayerData.Instance.TimeSpentOnCurrentQuestion = Time.time - questionStartTime;
+
+        // Increment the number of attempts
+        PlayerData.Instance.CurrentQuestionAttempts++;
+
+        // Determine if the answer is correct
+        bool answeredCorrectly = selectedAnswer == correctAnswer;
+
+        if (answeredCorrectly)
         {
             UnityEngine.Debug.Log("Correct Answer!");
             playerScore += 10;  // Increase score
@@ -121,19 +134,34 @@ public class textControl : MonoBehaviour
             {
                 UnityEngine.Debug.LogWarning("Question ID already in answered list: " + questionId);
             }
+
+            // Reset attempts and hint status for the next question
+            PlayerData.Instance.CurrentQuestionAttempts = 0;
+            PlayerData.Instance.HintGiven = false;
         }
         else
         {
             UnityEngine.Debug.Log("Incorrect Answer!");
         }
 
+        // Update the player's performance in the database
+        StartCoroutine(UpdatePlayerPerformance(
+            PlayerData.Instance.playerId,
+            questionId,
+            answeredCorrectly,
+            PlayerData.Instance.CurrentQuestionAttempts,
+            PlayerData.Instance.HintGiven,
+            PlayerData.Instance.TimeSpentOnCurrentQuestion
+        ));
+
+        // Move to the next question
         currentQuestionIndex++;
         DisplayNextUnansweredQuestion();  // Display the next unanswered question
     }
 
     void UpdateScoreText()
     {
-        scoreText.text = "Score: " + playerScore.ToString();
+        scoreText.text = playerScore.ToString();
     }
 
     void CheckLevelUp()
@@ -182,7 +210,27 @@ public class textControl : MonoBehaviour
             }
         }
     }
+
+    IEnumerator UpdatePlayerPerformance(int userId, int questionId, bool answeredCorrectly, int attempts, bool hintGiven, float timeTaken)
+    {
+        string url = $"https://localhost:7096/api/Users/updatePerformance?userId={userId}&questionId={questionId}&answeredCorrectly={answeredCorrectly}&attempts={attempts}&hintGiven={hintGiven}&timeTaken={timeTaken}";
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Put(url, ""))
+        {
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isNetworkError || webRequest.isHttpError)
+            {
+                UnityEngine.Debug.LogError("Error updating player performance: " + webRequest.error);
+            }
+            else
+            {
+                UnityEngine.Debug.Log("Player performance updated successfully.");
+            }
+        }
+    }
 }
+
 
 
 [System.Serializable]

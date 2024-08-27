@@ -9,6 +9,10 @@ public class PlayerData : MonoBehaviour
     public int playerId { get; private set; }
     public string playerName { get; private set; }
     public int playerLevel { get; private set; }
+    public int Score { get; set; }
+    public int CurrentQuestionAttempts { get; set; }
+    public bool HintGiven { get; set; }
+    public float TimeSpentOnCurrentQuestion { get; set; }
 
     private void Awake()
     {
@@ -28,6 +32,13 @@ public class PlayerData : MonoBehaviour
         playerId = id;
         playerName = name;
         playerLevel = level;
+        ResetQuestionData();  // Initialize or reset question-related data
+    }
+
+    public void ResetQuestionData()
+    {
+        CurrentQuestionAttempts = 0;
+        HintGiven = false;
+        TimeSpentOnCurrentQuestion = 0f;
     }
 }
-
