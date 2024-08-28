@@ -2,7 +2,7 @@
 {
     public class QuestionModel
     {
-        public int Id { get; set; }  // Assuming there's an Id column as a primary key
+        public int Id { get; set; }  
         public string QuestionText { get; set; }
         public string DifficultyLevel { get; set; }  // Mapping to `difficulty_level`
         public string Category { get; set; }

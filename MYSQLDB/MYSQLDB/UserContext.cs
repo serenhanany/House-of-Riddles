@@ -10,6 +10,9 @@ public class UserContext : DbContext
     public DbSet<QuestionModel> Questions { get; set; }
     public DbSet<PlayerAnsweredQuestionModel> PlayerAnsweredQuestions { get; set; }
 
+    public DbSet<PlayerPerformance> PlayerPerformance { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<QuestionModel>().ToTable("temp_questions");
