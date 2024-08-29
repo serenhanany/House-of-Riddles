@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
 using Newtonsoft.Json;
+using Unity.MLAgents;
+using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Actuators;
 
 
 public class textControl : MonoBehaviour
@@ -21,6 +24,9 @@ public class textControl : MonoBehaviour
     private List<QuestionModel> questions;
     private HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/Users";
+
+    // Reference to the HintAgent
+    public HintAgent hintAgent;
 
     void Start()
     {
@@ -64,6 +70,10 @@ public class textControl : MonoBehaviour
                 hintText.text = hint;
                 PlayerData.Instance.HintGiven = true;
 
+                // Inform the HintAgent that a hint was given
+                hintAgent.AddReward(-0.1f); // Optional: Give a small penalty for giving a hint
+                hintAgent.EndEpisode();
+
                 StartCoroutine(UpdatePlayerData(
                     PlayerData.Instance.playerId,
                     questionId,
@@ -93,7 +103,6 @@ public class textControl : MonoBehaviour
                 string jsonResponse = webRequest.downloadHandler.text;
                 Debug.Log("Received JSON: " + jsonResponse);
 
-                // Deserialize the response into a list of QuestionModel
                 questions = JsonConvert.DeserializeObject<List<QuestionModel>>(jsonResponse);
 
                 if (questions != null && questions.Count > 0)
@@ -175,7 +184,17 @@ public class textControl : MonoBehaviour
             {
                 answeredQuestionIds.Add(questionId);
             }
+
+            // Reward the agent for a correct answer
+            hintAgent.AddReward(1.0f);
         }
+        else
+        {
+            // Penalize the agent for an incorrect answer
+            hintAgent.AddReward(-1.0f);
+        }
+
+        hintAgent.EndEpisode(); // End the current episode for the agent
 
         StartCoroutine(UpdatePlayerData(
             PlayerData.Instance.playerId,
