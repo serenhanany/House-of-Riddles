@@ -10,25 +10,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.collections": {
-      "version": "2.2.1",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.burst": "1.8.8",
-        "com.unity.nuget.mono-cecil": "1.11.4",
-        "com.unity.modules.unityanalytics": "1.0.0",
-        "com.unity.test-framework.performance": "3.0.2"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.ext.nunit": {
-      "version": "1.0.6",
-      "depth": 5,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
     "com.unity.mathematics": {
       "version": "1.2.6",
       "depth": 3,
@@ -37,23 +18,15 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ml-agents": {
-      "version": "https://github.com/Unity-Technologies/ml-agents.git?path=com.unity.ml-agents",
+      "version": "file:C:/Users/סירין/Downloads/ml-agents/com.unity.ml-agents",
       "depth": 0,
-      "source": "git",
+      "source": "local",
       "dependencies": {
-        "com.unity.sentis": "2.0.0",
+        "com.unity.sentis": "1.2.0-exp.2",
         "com.unity.modules.imageconversion": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.physics": "1.0.0"
-      },
-      "hash": "2b50f60f4a4065c5cee902f03feb834a979eca3b"
-    },
-    "com.unity.nuget.mono-cecil": {
-      "version": "1.11.4",
-      "depth": 3,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.1",
@@ -63,34 +36,13 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.sentis": {
-      "version": "2.0.0",
+      "version": "1.2.0-exp.2",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.burst": "1.8.12",
-        "com.unity.collections": "2.2.1",
+        "com.unity.burst": "1.8.4",
+        "com.unity.modules.jsonserialize": "1.0.0",
         "com.unity.modules.imageconversion": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.test-framework": {
-      "version": "1.1.33",
-      "depth": 4,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6",
-        "com.unity.modules.imgui": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.test-framework.performance": {
-      "version": "3.0.2",
-      "depth": 3,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.test-framework": "1.1.31",
-        "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },

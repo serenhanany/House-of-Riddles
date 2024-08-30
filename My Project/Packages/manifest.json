@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.unity.ml-agents": "https://github.com/Unity-Technologies/ml-agents.git?path=com.unity.ml-agents",
+    "com.unity.ml-agents": "file:C:/Users/סירין/Downloads/ml-agents/com.unity.ml-agents",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.textmeshpro": "3.0.9",
     "com.unity.ugui": "1.0.0",
