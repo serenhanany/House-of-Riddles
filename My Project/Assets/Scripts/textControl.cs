@@ -10,6 +10,7 @@ using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 
 
+
 public class textControl : MonoBehaviour
 {
     public TMP_Text questionText;
@@ -30,6 +31,7 @@ public class textControl : MonoBehaviour
 
     void Start()
     {
+        // Check PlayerData.Instance
         if (PlayerData.Instance == null)
         {
             Debug.LogError("PlayerData.Instance is null. Ensure it is initialized before accessing it.");
@@ -39,6 +41,7 @@ public class textControl : MonoBehaviour
         playerLevel = PlayerData.Instance.playerLevel;
         StartCoroutine(GetQuestionsForLevel(playerLevel));
 
+        // Check UI Elements
         if (hintButton != null)
         {
             hintButton.onClick.AddListener(() => StartCoroutine(GiveHint(currentQuestionIndex)));
@@ -47,6 +50,12 @@ public class textControl : MonoBehaviour
         {
             Debug.LogError("hintButton is not assigned in the Inspector.");
         }
+
+        if (questionText == null) Debug.LogError("questionText is not assigned in the Inspector.");
+        if (optionButtons == null || optionButtons.Length == 0) Debug.LogError("optionButtons are not assigned in the Inspector.");
+        if (hintText == null) Debug.LogError("hintText is not assigned in the Inspector.");
+        if (scoreText == null) Debug.LogError("scoreText is not assigned in the Inspector.");
+        if (hintAgent == null) Debug.LogError("hintAgent is not assigned in the Inspector.");
 
         UpdateScoreText();
     }
@@ -71,8 +80,11 @@ public class textControl : MonoBehaviour
                 PlayerData.Instance.HintGiven = true;
 
                 // Inform the HintAgent that a hint was given
-                hintAgent.AddReward(-0.1f); // Optional: Give a small penalty for giving a hint
-                hintAgent.EndEpisode();
+                if (hintAgent != null)
+                {
+                    hintAgent.AddReward(-0.1f); // Optional: Give a small penalty for giving a hint
+                    hintAgent.EndEpisode();
+                }
 
                 StartCoroutine(UpdatePlayerData(
                     PlayerData.Instance.playerId,
@@ -122,6 +134,7 @@ public class textControl : MonoBehaviour
     void DisplayNextUnansweredQuestion()
     {
         hintText.text = "";
+
         if (questions == null || questions.Count == 0)
         {
             Debug.LogError("No questions available to display.");
@@ -146,6 +159,18 @@ public class textControl : MonoBehaviour
 
     void DisplayQuestion(QuestionModel question)
     {
+        if (question == null)
+        {
+            Debug.LogError("Question is null");
+            return;
+        }
+
+        if (optionButtons == null || optionButtons.Length < 4)
+        {
+            Debug.LogError("Option buttons are not correctly set up in the Inspector.");
+            return;
+        }
+
         questionStartTime = Time.time;
         PlayerData.Instance.TimeSpentOnCurrentQuestion = 0;
         PlayerData.Instance.CurrentQuestionAttempts = 0;
@@ -179,23 +204,34 @@ public class textControl : MonoBehaviour
         {
             playerScore += 10;
             UpdateScoreText();
-
+            CheckLevelUp();
             if (!answeredQuestionIds.Contains(questionId))
             {
                 answeredQuestionIds.Add(questionId);
             }
 
-            // Reward the agent for a correct answer
-            hintAgent.AddReward(1.0f);
+            if (hintAgent != null)
+            {
+                hintAgent.AddReward(1.0f); // Reward the agent for a correct answer
+                hintAgent.EndEpisode(); // End the current episode for the agent
+            }
+
+            currentQuestionIndex++; // Move to the next question only if answered correctly
+            DisplayNextUnansweredQuestion();
         }
         else
         {
-            // Penalize the agent for an incorrect answer
-            hintAgent.AddReward(-1.0f);
+            if (hintAgent != null)
+            {
+                hintAgent.AddReward(-1.0f); // Penalize the agent for an incorrect answer
+                hintAgent.EndEpisode(); // End the current episode for the agent
+            }
+
+            // Optionally provide feedback or keep the current question
+            Debug.Log("Incorrect answer. Try again!");
         }
 
-        hintAgent.EndEpisode(); // End the current episode for the agent
-
+        // Update player data regardless of correctness
         StartCoroutine(UpdatePlayerData(
             PlayerData.Instance.playerId,
             questionId,
@@ -204,14 +240,15 @@ public class textControl : MonoBehaviour
             PlayerData.Instance.HintGiven,
             PlayerData.Instance.TimeSpentOnCurrentQuestion
         ));
-
-        currentQuestionIndex++;
-        DisplayNextUnansweredQuestion();
     }
+
 
     void UpdateScoreText()
     {
-        scoreText.text = playerScore.ToString();
+        if (scoreText != null)
+        {
+            scoreText.text = playerScore.ToString();
+        }
     }
 
     void CheckLevelUp()
@@ -272,6 +309,12 @@ public class textControl : MonoBehaviour
 
     void ShuffleQuestions()
     {
+        if (questions == null || questions.Count == 0)
+        {
+            Debug.LogError("No questions available to shuffle.");
+            return;
+        }
+
         for (int i = 0; i < questions.Count; i++)
         {
             QuestionModel temp = questions[i];

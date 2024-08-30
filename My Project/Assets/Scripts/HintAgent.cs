@@ -4,33 +4,51 @@ using Unity.MLAgents.Actuators;
 
 public class HintAgent : Agent
 {
+    private RLTrainingScript rlTrainingScript;
+
+    public override void Initialize()
+    {
+        rlTrainingScript = GetComponent<RLTrainingScript>();
+    }
+
     public override void OnEpisodeBegin()
     {
-        // Reset environment at the start of each episode
+        // Reset the environment or agent state at the beginning of an episode
+        rlTrainingScript.ResetEnvironment();
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Collect game state as observations
-        sensor.AddObservation(PlayerData.Instance.CurrentQuestionAttempts);
-        sensor.AddObservation(PlayerData.Instance.HintGiven);
-        sensor.AddObservation(PlayerData.Instance.TimeSpentOnCurrentQuestion);
+        // Collect the state space as observations
+        var state = rlTrainingScript.GetState();
+        foreach (var value in state.Values)
+        {
+            sensor.AddObservation(value);
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        int action = actions.DiscreteActions[0];
+        // Convert the discrete action into the RLAction enum
+        RLTrainingScript.RLAction action = (RLTrainingScript.RLAction)actions.DiscreteActions[0];
 
-        if (action == 0)
-        {
-            // No hint given
-        }
-        else if (action == 1)
-        {
-            // Give hint
-        }
+        // Execute the action in the environment
+        rlTrainingScript.TakeAction(action);
 
-        // Define rewards
-        AddReward(1.0f);  // Example: Positive reward for correct answer
+        // Get the reward based on the action outcome
+        bool answeredCorrectly = rlTrainingScript.CheckIfAnswerCorrect();
+        float reward = rlTrainingScript.GetReward(answeredCorrectly);
+        AddReward(reward);
+
+        // Check if the episode should end
+        if (rlTrainingScript.IsEpisodeDone())
+        {
+            EndEpisode();
+        }
+    }
+
+    public override void Heuristic(in ActionBuffers actionsOut)
+    {
+        // Implement if you want to manually control the agent during training/testing
     }
 }
