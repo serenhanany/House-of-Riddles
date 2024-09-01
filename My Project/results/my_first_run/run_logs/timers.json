@@ -2,7 +2,7 @@
     "name": "root",
     "metadata": {
         "timer_format_version": "0.1.0",
-        "start_time_seconds": "1725047900",
+        "start_time_seconds": "1725187722",
         "python_version": "3.9.12 (tags/v3.9.12:b28265d, Mar 23 2022, 23:52:46) [MSC v.1929 64 bit (AMD64)]",
         "command_line_arguments": "C:\\Users\\\u05e1\u05d9\u05e8\u05d9\u05df\\Desktop\\House-of-Riddles\\My Project\\venv39\\Scripts\\mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=my_first_run --no-graphics --resume",
         "mlagents_version": "0.30.0",
@@ -10,31 +10,31 @@
         "communication_protocol_version": "1.5.0",
         "pytorch_version": "2.4.0+cpu",
         "numpy_version": "1.21.2",
-        "end_time_seconds": "1725047963"
+        "end_time_seconds": "1725187785"
     },
-    "total": 62.975590499999996,
+    "total": 63.03616589999999,
     "count": 1,
-    "self": 0.017395000000000493,
+    "self": 0.023590499999997405,
     "children": {
         "run_training.setup": {
-            "total": 0.24416890000000002,
+            "total": 0.18834930000000005,
             "count": 1,
-            "self": 0.24416890000000002
+            "self": 0.18834930000000005
         },
         "TrainerController.start_learning": {
-            "total": 62.7140266,
+            "total": 62.8242261,
             "count": 1,
-            "self": 0.00012879999999171332,
+            "self": 0.00023379999998951462,
             "children": {
                 "TrainerController._reset_env": {
-                    "total": 62.713861900000005,
+                    "total": 62.8239074,
                     "count": 1,
-                    "self": 62.713861900000005
+                    "self": 62.8239074
                 },
                 "TrainerController._save_models": {
-                    "total": 3.5900000000310683e-05,
+                    "total": 8.490000000449527e-05,
                     "count": 1,
-                    "self": 3.5900000000310683e-05
+                    "self": 8.490000000449527e-05
                 }
             }
         }
