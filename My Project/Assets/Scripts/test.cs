@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using TMPro;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
+using Newtonsoft.Json;
 
 
 public class test : MonoBehaviour
@@ -20,18 +22,19 @@ public class test : MonoBehaviour
     private int currentQuestionIndex = 0;
     private List<QuestionModel> questions;
     private HashSet<int> answeredQuestionIds = new HashSet<int>();
+    private string apiUrl = "https://localhost:7096/api/users";
+    public int predefinedLevel = 1;
 
     // Reference to the HintAgent
     public HintAgent hintAgent;
 
     void Start()
     {
-        // Load a predefined set of questions directly for training purposes
-        LoadQuestions();
+        StartCoroutine(FetchQuestions(predefinedLevel));
 
         if (hintButton != null)
         {
-            hintButton.onClick.AddListener(() => GiveHint(currentQuestionIndex));
+            hintButton.onClick.AddListener(() => StartCoroutine(GiveHint(currentQuestionIndex)));
         }
         else
         {
@@ -47,33 +50,73 @@ public class test : MonoBehaviour
         UpdateScoreText();
     }
 
-    void GiveHint(int questionId)
+    IEnumerator FetchQuestions(int playerLevel)
     {
-        // Simulate hint being given for training
-        string hint = "This is a hint.";
-        hintText.text = hint;
+        string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}";
+        Debug.Log("Connecting to URL: " + url);
 
-        // Inform the HintAgent that a hint was given
-        if (hintAgent != null)
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            hintAgent.AddReward(-0.1f); // Optional: Give a small penalty for giving a hint
-            hintAgent.EndEpisode();
+            Debug.LogError("Error: " + request.error);
+        }
+        else
+        {
+            Debug.Log("Response: " + request.downloadHandler.text);
+            if (request.responseCode == 200)
+            {
+                // Parse the server response to get the questions
+                questions = JsonConvert.DeserializeObject<List<QuestionModel>>(request.downloadHandler.text);
+
+                if (questions != null && questions.Count > 0)
+                {
+                    Debug.Log("Questions received successfully!");
+                    currentQuestionIndex = 0;
+                    DisplayNextUnansweredQuestion();
+                }
+                else
+                {
+                    Debug.LogError("No questions found or failed to parse JSON.");
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to fetch questions: " + request.downloadHandler.text);
+            }
         }
     }
 
-    void LoadQuestions()
+    IEnumerator GiveHint(int questionId)
     {
-        // Simulate loading a set of predefined questions for training
-        questions = new List<QuestionModel>
-        {
-            new QuestionModel { Id = 1, QuestionText = "What is 2 + 2?", AnswerOption1 = "3", AnswerOption2 = "4", AnswerOption3 = "5", AnswerOption4 = "6", CorrectAnswer = "4" },
-            new QuestionModel { Id = 2, QuestionText = "What is the capital of France?", AnswerOption1 = "Berlin", AnswerOption2 = "Paris", AnswerOption3 = "Rome", AnswerOption4 = "Madrid", CorrectAnswer = "Paris" }
-            // Add more questions as needed
-        };
+        string url = $"{apiUrl}/getHint?questionId={questionId}";
 
-        ShuffleQuestions();
-        currentQuestionIndex = 0;
-        DisplayNextUnansweredQuestion();
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+        {
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error fetching hint: " + webRequest.error);
+                yield break;
+            }
+
+            else
+            {
+                string hint = webRequest.downloadHandler.text;
+                hintText.text = hint;
+
+                if (hintAgent != null)
+                {
+                    hintAgent.AddReward(-0.1f); // Optional: Give a small penalty for giving a hint
+                    hintAgent.EndEpisode();
+                }
+            }
+        }
     }
 
     void DisplayNextUnansweredQuestion()
@@ -97,7 +140,7 @@ public class test : MonoBehaviour
         }
         else
         {
-            Debug.Log("All questions have been answered.");
+            Debug.Log("All questions at this level have been answered.");
         }
     }
 
@@ -206,4 +249,5 @@ public class QuestionModel
     public string AnswerOption2 { get; set; }
     public string AnswerOption3 { get; set; }
     public string AnswerOption4 { get; set; }
-}*/
+}
+*/

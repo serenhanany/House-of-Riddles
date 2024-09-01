@@ -924,7 +924,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 745450068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f40af5761c718494cae247a805ff9198, type: 3}
+  m_Script: {fileID: 11500000, guid: afeffbe05bdee144280b98959797bb3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   questionText: {fileID: 1950726949}
@@ -935,7 +935,8 @@ MonoBehaviour:
   - {fileID: 376357744}
   hintButton: {fileID: 1882988122}
   hintText: {fileID: 1763644360}
-  scoreText: {fileID: 249537657}
+  scoreText: {fileID: 2002495965}
+  predefinedLevel: 1
   hintAgent: {fileID: 1554586464}
 --- !u!1 &799901489
 GameObject:
