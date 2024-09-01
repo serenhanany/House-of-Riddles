@@ -1,6 +1,8 @@
-
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
+using Newtonsoft.Json;
+using System.Collections;
 
 public class RLTrainingScript : MonoBehaviour
 {
@@ -18,10 +20,13 @@ public class RLTrainingScript : MonoBehaviour
 
     private List<QuestionModel> questions;
 
+    private string apiUrl = "https://localhost:7096/api/users"; // Base API URL
+    public int predefinedLevel = 1;  // This could be dynamic based on player data
+
     void Start()
     {
         // Initialize the environment with a set of questions, player data, etc.
-        ResetEnvironment();
+        StartCoroutine(LoadQuestionsFromDB(predefinedLevel));
     }
 
     public void ResetEnvironment()
@@ -31,19 +36,55 @@ public class RLTrainingScript : MonoBehaviour
         attempts = 0;
         hintGiven = false;
         timeSpent = 0;
-        LoadQuestions();
-        ChooseNewQuestion();
+        if (questions != null && questions.Count > 0)
+        {
+            ChooseNewQuestion();
+        }
+        else
+        {
+            Debug.LogError("No questions available to start the environment.");
+        }
     }
 
-    private void LoadQuestions()
+    private IEnumerator LoadQuestionsFromDB(int playerLevel)
     {
-        // Load questions from a data source or use predefined questions
-        questions = new List<QuestionModel>
+        string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}";
+        Debug.Log("Connecting to URL: " + url);
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            new QuestionModel { Id = 1, QuestionText = "What is 2 + 2?", CorrectAnswer = "4", Hint = "Think about basic math.", AnswerOption1 = "3", AnswerOption2 = "4", AnswerOption3 = "5", AnswerOption4 = "6" },
-            new QuestionModel { Id = 2, QuestionText = "What is the capital of France?", CorrectAnswer = "Paris", Hint = "It's known as the city of love.", AnswerOption1 = "Rome", AnswerOption2 = "Madrid", AnswerOption3 = "Paris", AnswerOption4 = "Berlin" },
-            // Add more questions here
-        };
+            Debug.LogError("Error: " + request.error);
+            Debug.LogError("Server response: " + request.downloadHandler.text);
+        }
+        else
+        {
+            Debug.Log("Response: " + request.downloadHandler.text);
+
+            if (request.responseCode == 200)
+            {
+                questions = JsonConvert.DeserializeObject<List<QuestionModel>>(request.downloadHandler.text);
+
+                if (questions != null && questions.Count > 0)
+                {
+                    Debug.Log("Questions loaded successfully!");
+                    ResetEnvironment();
+                }
+                else
+                {
+                    Debug.LogError("No questions found or failed to parse JSON.");
+                }
+            }
+            else
+            {
+                Debug.LogError("Failed to fetch questions: " + request.downloadHandler.text);
+            }
+        }
     }
 
     public Dictionary<string, float> GetState()

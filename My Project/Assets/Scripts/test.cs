@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
-using Unity.MLAgents;
-using Unity.MLAgents.Sensors;
-using Unity.MLAgents.Actuators;
 using Newtonsoft.Json;
 
 
@@ -23,7 +20,7 @@ public class test : MonoBehaviour
     private List<QuestionModel> questions;
     private HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/users";
-    public int predefinedLevel = 1;
+    public int predefinedLevel = 16;
 
     // Reference to the HintAgent
     public HintAgent hintAgent;
@@ -64,10 +61,12 @@ public class test : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error: " + request.error);
+            Debug.LogError("Server response: " + request.downloadHandler.text);  // Log the server's response
         }
         else
         {
             Debug.Log("Response: " + request.downloadHandler.text);
+
             if (request.responseCode == 200)
             {
                 // Parse the server response to get the questions
@@ -238,7 +237,7 @@ public class test : MonoBehaviour
         }
     }
 }
-/*
+
 [System.Serializable]
 public class QuestionModel
 {
@@ -249,5 +248,5 @@ public class QuestionModel
     public string AnswerOption2 { get; set; }
     public string AnswerOption3 { get; set; }
     public string AnswerOption4 { get; set; }
+    public string Hint { get; set; }  
 }
-*/

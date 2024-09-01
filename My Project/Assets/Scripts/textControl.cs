@@ -324,7 +324,7 @@ public class textControl : MonoBehaviour
         }
     }
 }
-
+/*
 [System.Serializable]
 public class QuestionModel
 {
@@ -339,3 +339,4 @@ public class QuestionModel
     public string AnswerOption3 { get; set; }
     public string AnswerOption4 { get; set; }
 }
+*/

@@ -2,7 +2,7 @@
     "name": "root",
     "metadata": {
         "timer_format_version": "0.1.0",
-        "start_time_seconds": "1725187722",
+        "start_time_seconds": "1725194443",
         "python_version": "3.9.12 (tags/v3.9.12:b28265d, Mar 23 2022, 23:52:46) [MSC v.1929 64 bit (AMD64)]",
         "command_line_arguments": "C:\\Users\\\u05e1\u05d9\u05e8\u05d9\u05df\\Desktop\\House-of-Riddles\\My Project\\venv39\\Scripts\\mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=my_first_run --no-graphics --resume",
         "mlagents_version": "0.30.0",
@@ -10,31 +10,31 @@
         "communication_protocol_version": "1.5.0",
         "pytorch_version": "2.4.0+cpu",
         "numpy_version": "1.21.2",
-        "end_time_seconds": "1725187785"
+        "end_time_seconds": "1725194506"
     },
-    "total": 63.03616589999999,
+    "total": 63.1964083,
     "count": 1,
-    "self": 0.023590499999997405,
+    "self": 0.042054600000000164,
     "children": {
         "run_training.setup": {
-            "total": 0.18834930000000005,
+            "total": 0.1617455999999997,
             "count": 1,
-            "self": 0.18834930000000005
+            "self": 0.1617455999999997
         },
         "TrainerController.start_learning": {
-            "total": 62.8242261,
+            "total": 62.992608100000005,
             "count": 1,
-            "self": 0.00023379999998951462,
+            "self": 0.0002592000000092298,
             "children": {
                 "TrainerController._reset_env": {
-                    "total": 62.8239074,
+                    "total": 62.992251100000004,
                     "count": 1,
-                    "self": 62.8239074
+                    "self": 62.992251100000004
                 },
                 "TrainerController._save_models": {
-                    "total": 8.490000000449527e-05,
+                    "total": 9.77999999918211e-05,
                     "count": 1,
-                    "self": 8.490000000449527e-05
+                    "self": 9.77999999918211e-05
                 }
             }
         }
