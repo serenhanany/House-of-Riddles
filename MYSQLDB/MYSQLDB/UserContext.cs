@@ -9,12 +9,12 @@ public class UserContext : DbContext
     public DbSet<UserModel> Users { get; set; }
     public DbSet<QuestionModel> Questions { get; set; }
     public DbSet<PlayerAnsweredQuestionModel> PlayerAnsweredQuestions { get; set; }
-
+    public DbSet<HintModel> QuestionHints { get; set; }
     public DbSet<PlayerPerformance> PlayerPerformance { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Configure the QuestionModel entity
         modelBuilder.Entity<QuestionModel>().ToTable("temp_questions");
         modelBuilder.Entity<QuestionModel>().HasKey(q => q.Id);
         modelBuilder.Entity<QuestionModel>().Property(q => q.QuestionText).HasColumnName("question_text");
@@ -26,8 +26,15 @@ public class UserContext : DbContext
         modelBuilder.Entity<QuestionModel>().Property(q => q.AnswerOption2).HasColumnName("answer_option2");
         modelBuilder.Entity<QuestionModel>().Property(q => q.AnswerOption3).HasColumnName("answer_option3");
         modelBuilder.Entity<QuestionModel>().Property(q => q.AnswerOption4).HasColumnName("answer_option4");
+        modelBuilder.Entity<QuestionModel>().Property(q => q.RecommendedLevel).HasColumnName("recommended_level");
+
+        // Configure the HintModel entity
+        modelBuilder.Entity<HintModel>().ToTable("question_hints");
+        modelBuilder.Entity<HintModel>().HasKey(h => h.HintId);  // Set HintId as the primary key
+        modelBuilder.Entity<HintModel>().Property(h => h.HintText).HasColumnName("hint_text");
+        modelBuilder.Entity<HintModel>().Property(h => h.QuestionId).HasColumnName("question_id");
+        modelBuilder.Entity<HintModel>().Property(h => h.HintLevel).HasColumnName("hint_level");
+
+        // Additional configurations can be added here if needed
     }
 }
-
-
-

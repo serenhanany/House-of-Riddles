@@ -20,7 +20,7 @@ public class test : MonoBehaviour
     private List<QuestionModel> questions;
     private HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/users";
-    public int predefinedLevel = 16;
+    public int predefinedLevel = 1;
 
     // Reference to the HintAgent
     public HintAgent hintAgent;
@@ -49,7 +49,7 @@ public class test : MonoBehaviour
 
     IEnumerator FetchQuestions(int playerLevel)
     {
-        string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}&recommendedLevel={playerLevel}";
+        string url = $"{apiUrl}/getQuestion?playerLevel={playerLevel}&recommendedLevel={playerLevel}";
        // string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}";
         Debug.Log("Connecting to URL: " + url);
 
@@ -242,21 +242,26 @@ public class test : MonoBehaviour
 [System.Serializable]
 public class QuestionModel
 {
-    public int Id { get; set; }
-    public string QuestionText { get; set; }
-    public string CorrectAnswer { get; set; }
-    public string AnswerOption1 { get; set; }
-    public string AnswerOption2 { get; set; }
-    public string AnswerOption3 { get; set; }
-    public string AnswerOption4 { get; set; }
-    public List<HintModel> Hints { get; set; }  // List of hints associated with the question
+    public int Id;
+    public string QuestionText;
+    public string DifficultyLevel;
+    public string Category;
+    public string Hint;
+    public string CorrectAnswer;
+    public string AnswerOption1;
+    public string AnswerOption2;
+    public string AnswerOption3;
+    public string AnswerOption4;
+    public int RecommendedLevel;
+    public List<HintModel> Hints; 
 }
 
 [System.Serializable]
 public class HintModel
 {
-    public int HintId { get; set; }
-    public string HintText { get; set; }
-    public int HintLevel { get; set; }  // Level or effectiveness of the hint
+    public int HintId;
+    public int QuestionId;
+    public string HintText;
+    public int HintLevel;
 }
 

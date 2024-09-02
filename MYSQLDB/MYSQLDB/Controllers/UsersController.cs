@@ -73,9 +73,9 @@ public class UsersController : ControllerBase
     [HttpGet("getQuestion")]
     public async Task<IActionResult> GetQuestion(int playerLevel)
     {
-        // Get questions based on the player's level
+        // Get questions based on the player's level using the new recommended_level column
         var questions = await _context.Questions
-                                      .Where(q => q.DifficultyLevel == GetDifficultyLevel(playerLevel))
+                                      .Where(q => q.RecommendedLevel <= playerLevel)
                                       .ToListAsync();
 
         if (questions == null || questions.Count == 0)
@@ -83,19 +83,17 @@ public class UsersController : ControllerBase
             return NotFound(new { Message = "No questions found for this level" });
         }
 
-        // Return the list of questions
+        // Optionally fetch hints for each question
+        foreach (var question in questions)
+        {
+            question.Hints = await _context.QuestionHints
+                                           .Where(h => h.QuestionId == question.Id)
+                                           .ToListAsync();
+        }
+
+        // Return the list of questions along with their hints
         return Ok(questions);
     }
-
-
-    private string GetDifficultyLevel(int playerLevel)
-    {
-        if (playerLevel == 1) return "easy";
-        else if (playerLevel == 2) return "medium";
-        else if (playerLevel == 3) return "hard";
-        else return "easy";  // Default to easy if level is unrecognized
-    }
-
 
     // POST: api/Users/recordAnswer
     [HttpPost("recordAnswer")]
@@ -124,14 +122,17 @@ public class UsersController : ControllerBase
     [HttpGet("getHint")]
     public async Task<IActionResult> GetHint(int questionId)
     {
-        var question = await _context.Questions.FirstOrDefaultAsync(q => q.Id == questionId);
+        // Fetch hints for a given question
+        var hints = await _context.QuestionHints
+                                  .Where(h => h.QuestionId == questionId)
+                                  .ToListAsync();
 
-        if (question == null)
+        if (hints == null || hints.Count == 0)
         {
-            return NotFound(new { Message = "Question not found" });
+            return NotFound(new { Message = "No hints found for this question" });
         }
 
-        return Ok(question.Hint);  // Return the hint for the question
+        return Ok(hints);  // Return the list of hints for the question
     }
 
     // PUT: api/Users/updatePerformance
@@ -156,8 +157,6 @@ public class UsersController : ControllerBase
                     AnsweredCorrectly = answeredCorrectly
                 };
                 _context.PlayerPerformance.Add(record);
-                //Console.WriteLine("Hello word"+record);
-
             }
             else
             {
@@ -195,6 +194,4 @@ public class UsersController : ControllerBase
 
         return Ok(new { Message = "User level updated successfully" });
     }
-
- 
 }
