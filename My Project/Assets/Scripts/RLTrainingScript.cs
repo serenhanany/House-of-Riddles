@@ -4,6 +4,9 @@ using UnityEngine.Networking;
 using Newtonsoft.Json;
 using System.Collections;
 
+
+
+
 public class RLTrainingScript : MonoBehaviour
 {
     public enum RLAction
@@ -11,8 +14,8 @@ public class RLTrainingScript : MonoBehaviour
         NoHint,
         GiveHint
     }
-
-    private QuestionModel currentQuestion;
+    public QuestionModel CurrentQuestion { get; private set; }
+    //private QuestionModel currentQuestion;
     private int playerScore;
     private int attempts;
     private bool hintGiven;
@@ -21,7 +24,7 @@ public class RLTrainingScript : MonoBehaviour
     private List<QuestionModel> questions;
 
     private string apiUrl = "https://localhost:7096/api/users"; // Base API URL
-    public int predefinedLevel = 1;  // This could be dynamic based on player data
+    public int predefinedLevel = 16;  // This could be dynamic based on player data
 
     void Start()
     {
@@ -49,7 +52,6 @@ public class RLTrainingScript : MonoBehaviour
     private IEnumerator LoadQuestionsFromDB(int playerLevel)
     {
         string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}";
-        Debug.Log("Connecting to URL: " + url);
 
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -60,32 +62,32 @@ public class RLTrainingScript : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error: " + request.error);
-            Debug.LogError("Server response: " + request.downloadHandler.text);
         }
         else
         {
-            Debug.Log("Response: " + request.downloadHandler.text);
+            questions = JsonConvert.DeserializeObject<List<QuestionModel>>(request.downloadHandler.text);
 
-            if (request.responseCode == 200)
+            foreach (var question in questions)
             {
-                questions = JsonConvert.DeserializeObject<List<QuestionModel>>(request.downloadHandler.text);
+                // Fetch associated hints for the question
+                string hintsUrl = $"{apiUrl}/getHints?questionId={question.Id}";
+                UnityWebRequest hintsRequest = UnityWebRequest.Get(hintsUrl);
+                yield return hintsRequest.SendWebRequest();
 
-                if (questions != null && questions.Count > 0)
+                if (hintsRequest.result == UnityWebRequest.Result.ConnectionError || hintsRequest.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    Debug.Log("Questions loaded successfully!");
-                    ResetEnvironment();
+                    Debug.LogError("Error fetching hints: " + hintsRequest.error);
                 }
                 else
                 {
-                    Debug.LogError("No questions found or failed to parse JSON.");
+                    question.Hints = JsonConvert.DeserializeObject<List<HintModel>>(hintsRequest.downloadHandler.text);
                 }
             }
-            else
-            {
-                Debug.LogError("Failed to fetch questions: " + request.downloadHandler.text);
-            }
+
+            ResetEnvironment();
         }
     }
+
 
     public Dictionary<string, float> GetState()
     {
@@ -103,33 +105,34 @@ public class RLTrainingScript : MonoBehaviour
         // Apply the selected action in the environment
         if (action == RLAction.GiveHint)
         {
-            GiveHint();
+           // GiveHint();
         }
     }
 
-    private void GiveHint()
+    
+    public void GiveHint(HintModel selectedHint)
     {
         // Logic for giving a hint to the player
         hintGiven = true;
-        Debug.Log($"Hint Given: {currentQuestion.Hint}");
+        Debug.Log($"Hint Given: {selectedHint.HintText}");
     }
 
     public bool CheckIfAnswerCorrect()
     {
         // Check if the player's answer is correct (this would depend on your game logic)
-        return currentQuestion.CorrectAnswer == "4"; // Example check, replace with actual answer checking logic
+        return CurrentQuestion.CorrectAnswer == "4"; // Example check, replace with actual answer checking logic
     }
 
-    public float GetReward(bool answeredCorrectly)
+    public float GetReward(bool answeredCorrectly, int hintLevel)
     {
         // Define a reward function based on whether the answer was correct and other factors
         if (answeredCorrectly)
         {
-            return 1.0f;
+            return 1.0f + 0.1f * hintLevel;  // Small bonus for correct answers with lower-level hints
         }
         else if (hintGiven)
         {
-            return -0.5f; // Penalty for needing a hint
+            return -0.5f - 0.1f * hintLevel;  // Penalty increases with more helpful hints
         }
         else
         {
@@ -137,17 +140,20 @@ public class RLTrainingScript : MonoBehaviour
         }
     }
 
+
     public bool IsEpisodeDone()
     {
         // Define the condition for ending an episode
         return attempts >= 3; // Example condition: end episode after 3 attempts
     }
 
+    
     private void ChooseNewQuestion()
     {
         // Choose a new question randomly from the list
         int randomIndex = Random.Range(0, questions.Count);
-        currentQuestion = questions[randomIndex];
-        Debug.Log($"New Question: {currentQuestion.QuestionText}");
+        CurrentQuestion = questions[randomIndex];
+        Debug.Log($"New Question: {CurrentQuestion.QuestionText}");
     }
+
 }

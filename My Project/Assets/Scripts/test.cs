@@ -49,7 +49,8 @@ public class test : MonoBehaviour
 
     IEnumerator FetchQuestions(int playerLevel)
     {
-        string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}";
+        string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}&recommendedLevel={playerLevel}";
+       // string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}";
         Debug.Log("Connecting to URL: " + url);
 
         UnityWebRequest request = UnityWebRequest.Get(url);
@@ -248,5 +249,14 @@ public class QuestionModel
     public string AnswerOption2 { get; set; }
     public string AnswerOption3 { get; set; }
     public string AnswerOption4 { get; set; }
-    public string Hint { get; set; }  
+    public List<HintModel> Hints { get; set; }  // List of hints associated with the question
 }
+
+[System.Serializable]
+public class HintModel
+{
+    public int HintId { get; set; }
+    public string HintText { get; set; }
+    public int HintLevel { get; set; }  // Level or effectiveness of the hint
+}
+
