@@ -94,7 +94,7 @@ public class LoginScript : MonoBehaviour
                         PlayerData.Instance.SetPlayerData(response.UserId, response.Username, response.Level);
 
                         // Navigate to the next scene
-                        SceneManager.LoadScene("questiontest");
+                        SceneManager.LoadScene("Buildings");
                     }
                     else
                     {
