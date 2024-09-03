@@ -2,7 +2,7 @@
     "name": "root",
     "metadata": {
         "timer_format_version": "0.1.0",
-        "start_time_seconds": "1725194443",
+        "start_time_seconds": "1725368305",
         "python_version": "3.9.12 (tags/v3.9.12:b28265d, Mar 23 2022, 23:52:46) [MSC v.1929 64 bit (AMD64)]",
         "command_line_arguments": "C:\\Users\\\u05e1\u05d9\u05e8\u05d9\u05df\\Desktop\\House-of-Riddles\\My Project\\venv39\\Scripts\\mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=my_first_run --no-graphics --resume",
         "mlagents_version": "0.30.0",
@@ -10,31 +10,31 @@
         "communication_protocol_version": "1.5.0",
         "pytorch_version": "2.4.0+cpu",
         "numpy_version": "1.21.2",
-        "end_time_seconds": "1725194506"
+        "end_time_seconds": "1725368368"
     },
-    "total": 63.1964083,
+    "total": 63.6837504,
     "count": 1,
-    "self": 0.042054600000000164,
+    "self": 0.04491509999999721,
     "children": {
         "run_training.setup": {
-            "total": 0.1617455999999997,
+            "total": 0.28415769999999974,
             "count": 1,
-            "self": 0.1617455999999997
+            "self": 0.28415769999999974
         },
         "TrainerController.start_learning": {
-            "total": 62.992608100000005,
+            "total": 63.3546776,
             "count": 1,
-            "self": 0.0002592000000092298,
+            "self": 0.0015960999999933279,
             "children": {
                 "TrainerController._reset_env": {
-                    "total": 62.992251100000004,
+                    "total": 63.352048,
                     "count": 1,
-                    "self": 62.992251100000004
+                    "self": 63.352048
                 },
                 "TrainerController._save_models": {
-                    "total": 9.77999999918211e-05,
+                    "total": 0.0010335000000054606,
                     "count": 1,
-                    "self": 9.77999999918211e-05
+                    "self": 0.0010335000000054606
                 }
             }
         }
