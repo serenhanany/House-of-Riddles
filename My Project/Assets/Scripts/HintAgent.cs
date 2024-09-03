@@ -1,7 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
-using UnityEngine;
 
 public class HintAgent : Agent
 {
@@ -14,9 +16,22 @@ public class HintAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        // Reset the environment or agent state at the beginning of an episode
+        StartCoroutine(WaitForQuestionsToLoad());
+    }
+
+    private IEnumerator WaitForQuestionsToLoad()
+    {
+        // Wait until questions are loaded
+        while (rlTrainingScript.Questions == null || rlTrainingScript.Questions.Count == 0)
+        {
+           // Debug.Log("Waiting for questions to load...");
+            yield return null; // Wait for the next frame
+        }
+
+        // Now, proceed to reset the environment
         rlTrainingScript.ResetEnvironment();
     }
+
 
     public override void CollectObservations(VectorSensor sensor)
     {

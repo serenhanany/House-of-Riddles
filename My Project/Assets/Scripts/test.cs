@@ -16,15 +16,15 @@ public class test : MonoBehaviour
     public TMP_Text scoreText;
     private float questionStartTime;
     private int playerScore = 0;
-    private int currentQuestionIndex = 0;
+    private int currentQuestionIndex=0;
     private List<QuestionModel> questions;
     private HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/users";
     public int predefinedLevel = 1;
-
+   // currentQuestionIndex = questions[currentQuestionIndex].Id;
     // Reference to the HintAgent
     public HintAgent hintAgent;
-
+   // public RLTrainingScript trainingScript;
     void Start()
     {
         StartCoroutine(FetchQuestions(predefinedLevel));
@@ -50,19 +50,15 @@ public class test : MonoBehaviour
     IEnumerator FetchQuestions(int playerLevel)
     {
         string url = $"{apiUrl}/getQuestion?playerLevel={playerLevel}&recommendedLevel={playerLevel}";
-       // string url = $"{apiUrl}/getQuestions?playerLevel={playerLevel}";
         Debug.Log("Connecting to URL: " + url);
 
         UnityWebRequest request = UnityWebRequest.Get(url);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error: " + request.error);
-            Debug.LogError("Server response: " + request.downloadHandler.text);  // Log the server's response
+            Debug.LogError("Server response: " + request.downloadHandler.text);
         }
         else
         {
@@ -70,14 +66,13 @@ public class test : MonoBehaviour
 
             if (request.responseCode == 200)
             {
-                // Parse the server response to get the questions
                 questions = JsonConvert.DeserializeObject<List<QuestionModel>>(request.downloadHandler.text);
 
                 if (questions != null && questions.Count > 0)
                 {
-                    Debug.Log("Questions received successfully!");
-                    currentQuestionIndex = 0;
+                    currentQuestionIndex++;
                     DisplayNextUnansweredQuestion();
+                    Debug.Log("Question ID: " + questions[currentQuestionIndex].Id); // Log question ID
                 }
                 else
                 {
@@ -91,33 +86,59 @@ public class test : MonoBehaviour
         }
     }
 
+    /*void ResetEnvironmentIfNeeded()
+    {
+        if (questions == null || questions.Count == 0)
+        {
+            Debug.LogError("No questions available to start the environment.");
+        }
+        else
+        {
+            // Proceed with resetting the environment
+            trainingScript.ResetEnvironment();
+            //ResetEnvironment();
+        }
+    }*/
+
+
     IEnumerator GiveHint(int questionId)
     {
         string url = $"{apiUrl}/getHint?questionId={questionId}";
-
+        Debug.Log("Connecting to URL: " + url);
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
 
             if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                Debug.LogError("Error fetching hint: " + webRequest.error);
-                yield break;
+                Debug.LogError("Error: " + webRequest.error);
+                Debug.LogError("Server response: " + webRequest.downloadHandler.text);
             }
-
             else
             {
-                string hint = webRequest.downloadHandler.text;
-                hintText.text = hint;
+                string jsonResponse = webRequest.downloadHandler.text;
+                var hints = JsonConvert.DeserializeObject<List<HintModel>>(jsonResponse);
 
-                if (hintAgent != null)
+                if (hints != null && hints.Count > 0)
                 {
-                    hintAgent.AddReward(-0.1f); // Optional: Give a small penalty for giving a hint
-                    hintAgent.EndEpisode();
+                    HintModel selectedHint = hints[0]; // Select the first hint as an example
+                    Debug.Log($"Hint Received: {selectedHint.HintText}");
+                    hintText.text = selectedHint.HintText;
+
+                    if (hintAgent != null)
+                    {
+                        hintAgent.AddReward(-0.1f); // Optional: Give a small penalty for giving a hint
+                        hintAgent.EndEpisode();
+                    }
+                }
+                else
+                {
+                    Debug.LogError("No hints available for this question.");
                 }
             }
         }
     }
+
 
     void DisplayNextUnansweredQuestion()
     {
@@ -263,5 +284,10 @@ public class HintModel
     public int QuestionId;
     public string HintText;
     public int HintLevel;
+}
+[System.Serializable]
+public class HintListWrapper
+{
+    public List<HintModel> hints;
 }
 

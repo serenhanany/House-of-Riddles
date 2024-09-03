@@ -935,7 +935,7 @@ MonoBehaviour:
   - {fileID: 376357744}
   hintButton: {fileID: 1882988122}
   hintText: {fileID: 1763644360}
-  scoreText: {fileID: 2002495965}
+  scoreText: {fileID: 249537657}
   predefinedLevel: 1
   hintAgent: {fileID: 1554586464}
 --- !u!1 &799901489
@@ -1617,7 +1617,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbdb26233697b9a40a1d2bd4829a225e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  predefinedLevel: 16
+  hintText: {fileID: 1763644360}
+  predefinedLevel: 1
 --- !u!114 &1554586468
 MonoBehaviour:
   m_ObjectHideFlags: 0

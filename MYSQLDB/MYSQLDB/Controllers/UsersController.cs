@@ -118,10 +118,11 @@ public class UsersController : ControllerBase
         }
     }
 
-    // GET: api/Users/getHint
     [HttpGet("getHint")]
     public async Task<IActionResult> GetHint(int questionId)
     {
+        Console.WriteLine($"Fetching hints for question ID: {questionId}");
+
         // Fetch hints for a given question
         var hints = await _context.QuestionHints
                                   .Where(h => h.QuestionId == questionId)
@@ -129,9 +130,11 @@ public class UsersController : ControllerBase
 
         if (hints == null || hints.Count == 0)
         {
+            Console.WriteLine("No hints found for this question.");
             return NotFound(new { Message = "No hints found for this question" });
         }
 
+        Console.WriteLine($"Found {hints.Count} hints.");
         return Ok(hints);  // Return the list of hints for the question
     }
 
