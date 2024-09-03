@@ -1,6 +1,7 @@
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
+using UnityEngine;
 
 public class HintAgent : Agent
 {
@@ -29,18 +30,30 @@ public class HintAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        // Convert the discrete action into the RLAction enum
-        RLTrainingScript.RLAction action = (RLTrainingScript.RLAction)actions.DiscreteActions[0];
+        int hintIndex = actions.DiscreteActions[0];  // The action determines which hint to provide
 
-        // Execute the action in the environment
-        rlTrainingScript.TakeAction(action);
+        // Declare hintLevel variable outside the if-else block
+        int hintLevel;
 
-        // Get the reward based on the action outcome
+        if (hintIndex >= 0 && hintIndex < rlTrainingScript.CurrentQuestion.Hints.Count)
+        {
+            var selectedHint = rlTrainingScript.CurrentQuestion.Hints[hintIndex];
+            rlTrainingScript.GiveHint(selectedHint);  // This method is now properly accessible
+
+            // Capture the hint level for use in reward calculation
+            hintLevel = selectedHint.HintLevel;
+        }
+        else
+        {
+            // Default to a hint level of 0 if no valid hint is selected
+            hintLevel = 0;
+        }
+
+        // Check the outcome and assign a reward
         bool answeredCorrectly = rlTrainingScript.CheckIfAnswerCorrect();
-        float reward = rlTrainingScript.GetReward(answeredCorrectly);
+        float reward = rlTrainingScript.GetReward(answeredCorrectly, hintLevel);
         AddReward(reward);
 
-        // Check if the episode should end
         if (rlTrainingScript.IsEpisodeDone())
         {
             EndEpisode();

@@ -1,6 +1,5 @@
+cd C:\Users\סירין\Desktop\House-of-Riddles\My Project
 venv39\Scripts\activate
 mlagents-learn --version
-
 mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=my_first_run --no-graphics --resume
 
-cd C:\Users\סירין\Desktop\House-of-Riddles\My Project

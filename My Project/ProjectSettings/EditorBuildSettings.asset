@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/questiontest.unity
     guid: 65bfbc49af23fb84b85f8a6c96a47847
+  - enabled: 1
+    path: Assets/Scenes/Buildings.unity
+    guid: 9b55066e9059e17428109fb9f93d95ca
   m_configObjects: {}

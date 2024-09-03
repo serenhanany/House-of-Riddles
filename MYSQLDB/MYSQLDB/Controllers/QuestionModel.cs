@@ -1,16 +1,21 @@
-﻿namespace MYSQLDB.Controllers
+﻿using MYSQLDB.Controllers;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+public class QuestionModel
 {
-    public class QuestionModel
-    {
-        public int Id { get; set; }  
-        public string QuestionText { get; set; }
-        public string DifficultyLevel { get; set; }  // Mapping to `difficulty_level`
-        public string Category { get; set; }
-        public string Hint { get; set; }
-        public string CorrectAnswer { get; set; }  // Mapping to `correct_answer`
-        public string AnswerOption1 { get; set; }  // Mapping to `answer_option1`
-        public string AnswerOption2 { get; set; }  // Mapping to `answer_option2`
-        public string AnswerOption3 { get; set; }  // Mapping to `answer_option3`
-        public string AnswerOption4 { get; set; }  // Mapping to `answer_option4`
-    }
+    public int Id { get; set; }
+    public string QuestionText { get; set; }
+    public string DifficultyLevel { get; set; }
+    public string Category { get; set; }
+    public string Hint { get; set; }
+    public string CorrectAnswer { get; set; }
+    public string AnswerOption1 { get; set; }
+    public string AnswerOption2 { get; set; }
+    public string AnswerOption3 { get; set; }
+    public string AnswerOption4 { get; set; }
+
+    [Column("recommended_level")]
+    public int RecommendedLevel { get; set; }
+    public List<HintModel> Hints { get; set; }  // Add this line
 }
