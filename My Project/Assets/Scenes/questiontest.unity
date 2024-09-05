@@ -833,7 +833,6 @@ GameObject:
   - component: {fileID: 745450071}
   - component: {fileID: 745450070}
   - component: {fileID: 745450069}
-  - component: {fileID: 745450072}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -915,29 +914,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &745450072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 745450068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afeffbe05bdee144280b98959797bb3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  questionText: {fileID: 1950726949}
-  optionButtons:
-  - {fileID: 799901491}
-  - {fileID: 472984502}
-  - {fileID: 235080336}
-  - {fileID: 376357744}
-  hintButton: {fileID: 1882988122}
-  hintText: {fileID: 1763644360}
-  scoreText: {fileID: 249537657}
-  predefinedLevel: 1
-  hintAgent: {fileID: 1554586464}
 --- !u!1 &799901489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1565,8 +1541,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1554586466}
   - component: {fileID: 1554586464}
-  - component: {fileID: 1554586467}
   - component: {fileID: 1554586468}
+  - component: {fileID: 1554586469}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1589,7 +1565,10 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 200
+  MaxStep: 1000
+  hintText: {fileID: 0}
+  fetchQuestions: {fileID: 0}
+  playerScore: 0
 --- !u!4 &1554586466
 Transform:
   m_ObjectHideFlags: 0
@@ -1605,20 +1584,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1554586467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1554586462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbdb26233697b9a40a1d2bd4829a225e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hintText: {fileID: 1763644360}
-  predefinedLevel: 1
 --- !u!114 &1554586468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1649,6 +1614,20 @@ MonoBehaviour:
   m_UseChildSensors: 1
   m_UseChildActuators: 1
   m_ObservableAttributeHandling: 0
+--- !u!114 &1554586469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554586462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  TakeActionsBetweenDecisions: 1
 --- !u!1 &1662574078
 GameObject:
   m_ObjectHideFlags: 0
@@ -1661,6 +1640,7 @@ GameObject:
   - component: {fileID: 1662574081}
   - component: {fileID: 1662574080}
   - component: {fileID: 1662574079}
+  - component: {fileID: 1662574083}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1759,85 +1739,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1730326058
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1730326061}
-  - component: {fileID: 1730326060}
-  - component: {fileID: 1730326059}
-  m_Layer: 0
-  m_Name: HintAcademy
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1730326059
+--- !u!114 &1662574083
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1730326058}
+  m_GameObject: {fileID: 1662574078}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88b6042bc9a5d4aa58d931eae49442e5, type: 3}
+  m_Script: {fileID: 11500000, guid: 03cf64e07f6acb54196b71aa0d1bbe7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentParameters:
-    maxStep: 0
-  hasUpgradedFromAgentParameters: 1
-  MaxStep: 0
---- !u!114 &1730326060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1730326058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_BrainParameters:
-    VectorObservationSize: 1
-    NumStackedVectorObservations: 1
-    m_ActionSpec:
-      m_NumContinuousActions: 0
-      BranchSizes: 01000000
-    VectorActionSize: 01000000
-    VectorActionDescriptions: []
-    VectorActionSpaceType: 0
-    hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
-  m_InferenceDevice: 0
-  m_BehaviorType: 0
-  m_BehaviorName: HintBehavior
-  TeamId: 0
-  m_UseChildSensors: 1
-  m_UseChildActuators: 1
-  m_ObservableAttributeHandling: 0
---- !u!4 &1730326061
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1730326058}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 461.8827, y: 199.03224, z: 78.9356}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  questionText: {fileID: 1950726949}
+  optionButtons:
+  - {fileID: 799901491}
+  - {fileID: 472984502}
+  - {fileID: 235080336}
+  - {fileID: 376357744}
+  hintButton: {fileID: 1882988122}
+  hintText: {fileID: 1763644360}
+  scoreText: {fileID: 249537657}
+  predefinedLevel: 1
+  hintAgent: {fileID: 1554586464}
 --- !u!1 &1763644358
 GameObject:
   m_ObjectHideFlags: 0
@@ -2127,8 +2051,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -162, y: 146}
-  m_SizeDelta: {x: 546.8, y: 50}
+  m_AnchoredPosition: {x: -154, y: 131}
+  m_SizeDelta: {x: 534.4, y: 46.8965}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1950726949
 MonoBehaviour:
@@ -2502,6 +2426,5 @@ SceneRoots:
   - {fileID: 745450071}
   - {fileID: 1319403319}
   - {fileID: 1662574082}
-  - {fileID: 230037125}
   - {fileID: 1554586466}
-  - {fileID: 1730326061}
+  - {fileID: 230037125}

@@ -4,80 +4,107 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
+using TMPro;
+
+
+
 
 public class HintAgent : Agent
 {
-    private RLTrainingScript rlTrainingScript;
-
-    public override void Initialize()
-    {
-        rlTrainingScript = GetComponent<RLTrainingScript>();
-    }
+    public TMP_Text hintText;
+    public FetchQuestions fetchQuestions; // Reference to the FetchQuestions class
+    private QuestionModel currentQuestion;
+    public int playerScore;
+    private bool hintGiven;
 
     public override void OnEpisodeBegin()
     {
-        StartCoroutine(WaitForQuestionsToLoad());
-    }
-
-    private IEnumerator WaitForQuestionsToLoad()
-    {
-        // Wait until questions are loaded
-        while (rlTrainingScript.Questions == null || rlTrainingScript.Questions.Count == 0)
+        if (fetchQuestions == null)
         {
-           // Debug.Log("Waiting for questions to load...");
-            yield return null; // Wait for the next frame
+            Debug.LogError("FetchQuestions reference is not assigned in HintAgent.");
+            return;
         }
 
-        // Now, proceed to reset the environment
-        rlTrainingScript.ResetEnvironment();
+        hintGiven = false;
+        currentQuestion = fetchQuestions.GetCurrentQuestion(); // Get the current question from FetchQuestions
+
+        if (currentQuestion == null)
+        {
+            Debug.LogError("No current question available.");
+        }
     }
 
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Collect the state space as observations
-        var state = rlTrainingScript.GetState();
-        foreach (var value in state.Values)
-        {
-            Debug.LogError(value);
-            sensor.AddObservation(value);
-        }
+        // Observe player's score and whether a hint was given
+        sensor.AddObservation(playerScore);
+        sensor.AddObservation(hintGiven ? 1.0f : 0.0f);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        int hintIndex = actions.DiscreteActions[0];  // The action determines which hint to provide
+        int action = actions.DiscreteActions[0];
 
-        // Declare hintLevel variable outside the if-else block
-        int hintLevel;
-
-        if (hintIndex >= 0 && hintIndex < rlTrainingScript.CurrentQuestion.Hints.Count)
+        // Action 0 = Easy hint, Action 1 = Medium hint, Action 2 = Hard hint
+        switch (action)
         {
-            var selectedHint = rlTrainingScript.CurrentQuestion.Hints[hintIndex];
-            rlTrainingScript.GiveHint(selectedHint);  // This method is now properly accessible
+            case 0:
+                GiveHint(1); // Easy hint (level 1)
+                break;
+            case 1:
+                GiveHint(2); // Medium hint (level 2)
+                break;
+            case 2:
+                GiveHint(3); // Hard hint (level 3)
+                break;
+        }
 
-            // Capture the hint level for use in reward calculation
-            hintLevel = selectedHint.HintLevel;
+        string selectedAnswer = fetchQuestions.GetSelectedAnswer();
+        bool answeredCorrectly = fetchQuestions.CheckIfAnswerCorrect(selectedAnswer);
+
+        if (answeredCorrectly)
+        {
+            AddReward(1.0f); // Reward for correct answer
         }
         else
         {
-            // Default to a hint level of 0 if no valid hint is selected
-            hintLevel = 0;
+            AddReward(-1.0f); // Penalty for incorrect answer
         }
 
-        // Check the outcome and assign a reward
-        bool answeredCorrectly = rlTrainingScript.CheckIfAnswerCorrect();
-        float reward = rlTrainingScript.GetReward(answeredCorrectly, hintLevel);
-        AddReward(reward);
-
-        if (rlTrainingScript.IsEpisodeDone())
-        {
-            EndEpisode();
-        }
+        EndEpisode(); // End the episode after a decision is made
     }
 
-    public override void Heuristic(in ActionBuffers actionsOut)
+    // New method: DecideHintLevel
+    public int DecideHintLevel()
     {
-        // Implement if you want to manually control the agent during training/testing
+        // For now, randomly decide between hint levels 1 (easy), 2 (medium), or 3 (hard)
+        return Random.Range(1, 4); // This can be replaced with a learned decision from the RL model
+    }
+
+    // Function to provide hints based on hint level (easy = 1, medium = 2, hard = 3)
+    private void GiveHint(int hintLevel)
+    {
+        if (currentQuestion == null)
+        {
+            Debug.LogError("No current question available.");
+            return;
+        }
+
+        // Select the hint based on the hint level (easy, medium, hard)
+        HintModel selectedHint = currentQuestion.Hints.Find(h => h.HintLevel == hintLevel);
+        if (selectedHint != null)
+        {
+            hintText.text = selectedHint.HintText; // Display the hint in the UI
+            hintGiven = true;
+            AddReward(-0.1f); // Small penalty for giving a hint to encourage minimal hints
+        }
+        else
+        {
+            Debug.LogWarning("No hint available for the specified level.");
+        }
     }
 }
+
+
+

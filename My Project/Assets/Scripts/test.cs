@@ -62,7 +62,7 @@ public class test : MonoBehaviour
         }
         else
         {
-            Debug.Log("Response: " + request.downloadHandler.text);
+            //Debug.Log("Response: " + request.downloadHandler.text);
 
             if (request.responseCode == 200)
             {
@@ -86,25 +86,14 @@ public class test : MonoBehaviour
         }
     }
 
-    /*void ResetEnvironmentIfNeeded()
-    {
-        if (questions == null || questions.Count == 0)
-        {
-            Debug.LogError("No questions available to start the environment.");
-        }
-        else
-        {
-            // Proceed with resetting the environment
-            trainingScript.ResetEnvironment();
-            //ResetEnvironment();
-        }
-    }*/
+ 
 
 
     IEnumerator GiveHint(int questionId)
     {
         string url = $"{apiUrl}/getHint?questionId={questionId}";
         Debug.Log("Connecting to URL: " + url);
+
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
