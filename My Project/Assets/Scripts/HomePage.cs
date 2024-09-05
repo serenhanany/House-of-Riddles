@@ -1,56 +1,63 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using System.Text;
-using UnityEngine.Networking;
-using TMPro;
+using TMPro; // for TextMeshPro, if used
 using UnityEngine.SceneManagement;
+
 public class HomePage : MonoBehaviour
 {
     public Button PlayButton;
     public Button PracticeButton;
     public Button HelpButton;
     public Button createAccountButton;
+    public GameObject helpPanel; // Reference to the panel
+
     // Start is called before the first frame update
     void Start()
-    {  
+    {
         if (PlayButton != null)
         {
-            // Add a listener to the button's click event
             PlayButton.onClick.AddListener(LoginScene);
         }
         if (PracticeButton != null)
         {
-            // Add a listener to the button's click event
             PracticeButton.onClick.AddListener(PracticeScene);
         }
         if (HelpButton != null)
         {
-            // Add a listener to the button's click event
-            HelpButton.onClick.AddListener(HelpScene);
+            HelpButton.onClick.AddListener(ToggleHelpPanel);
         }
         if (createAccountButton != null)
         {
-            // Add a listener to the button's click event
             createAccountButton.onClick.AddListener(createAccountScene);
         }
 
+        // Initially hide the help panel
+        if (helpPanel != null)
+        {
+            helpPanel.SetActive(false);
+        }
     }
+
     public void LoginScene()
     {
         SceneManager.LoadScene("Login");
     }
+
     public void PracticeScene()
     {
         SceneManager.LoadScene("Practice");
     }
-    public void HelpScene()
+
+    public void ToggleHelpPanel()
     {
-       // SceneManager.LoadScene("Login");
+        if (helpPanel != null)
+        {
+            helpPanel.SetActive(!helpPanel.activeSelf);
+        }
     }
+
     public void createAccountScene()
     {
         SceneManager.LoadScene("Register");
     }
-
 }
