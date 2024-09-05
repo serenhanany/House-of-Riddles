@@ -39,6 +39,7 @@ public class HintAgent : Agent
         var state = rlTrainingScript.GetState();
         foreach (var value in state.Values)
         {
+            Debug.LogError(value);
             sensor.AddObservation(value);
         }
     }

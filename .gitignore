@@ -41,3 +41,10 @@ bld/
 [Bb]uilds/
 [Ll]ogs/
 [Mm]emoryCaptures/
+
+
+
+# Custom Large Files (add your large files here)
+# Ignore large .lib files
+My Project/new_venv/Lib/site-packages/torch/lib/dnnl.lib
+venv/Lib/site-packages/torch/lib/dnnl.lib
