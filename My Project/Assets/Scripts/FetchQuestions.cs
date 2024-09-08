@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 
 
 
-
 public class FetchQuestions : MonoBehaviour
 {
+    public bool questionsLoaded = false;
     private string selectedAnswer;
     public TMP_Text questionText;
     public Button[] optionButtons;
@@ -30,17 +30,21 @@ public class FetchQuestions : MonoBehaviour
 
     void Start()
     {
+        // Fetch questions from the server or database based on the player's predefined level
         StartCoroutine(FetchQuestionsFromDB(predefinedLevel));
+
+        // No need to use hintButton since the RL agent decides when to give a hint
         if (hintButton != null)
         {
-            hintButton.onClick.AddListener(() => StartCoroutine(GiveHint(currentQuestionIndex)));
+            hintAgent.enabled = false;
+            Debug.Log("Hint button is currently disabled as the RL agent controls hint-giving.");
         }
-        else
-        {
-            Debug.LogError("Hint button is not assigned.");
-        }
+
         UpdateScoreText();
     }
+
+
+
 
 
     // Fetch questions based on player level
@@ -53,63 +57,89 @@ public class FetchQuestions : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error fetching questions: " + request.error);
+            questionsLoaded = false;
+            yield break; // Exit the coroutine if there is an error
+        }
+
+        // Deserialize the questions from the server response
+        questions = JsonConvert.DeserializeObject<List<QuestionModel>>(request.downloadHandler.text);
+
+        // Ensure we got valid questions
+        if (questions == null || questions.Count == 0)
+        {
+            Debug.LogError("No questions were returned or the question data is invalid.");
+            questionsLoaded = false;
+            yield break; // Exit the coroutine if no questions are available
+        }
+
+        questionsLoaded = true;
+
+        if (hintAgent != null)
+        {
+            hintAgent.enabled = true;  // Re-enable the agent's decision-making
+            hintAgent.OnEpisodeBegin();  // Manually trigger OnEpisodeBegin() again to start the episode
+        }
+
+
+        foreach (var question in questions)
+        {
+            string hintsUrl = $"{apiUrl}/getHint?questionId={question.Id}";
+            UnityWebRequest hintsRequest = UnityWebRequest.Get(hintsUrl);
+            yield return hintsRequest.SendWebRequest();
+
+            if (hintsRequest.result == UnityWebRequest.Result.ConnectionError || hintsRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError("Error fetching hints: " + hintsRequest.error);
+                yield break; // Handle error in fetching hints
+            }
+
+            List<HintModel> hints = JsonConvert.DeserializeObject<List<HintModel>>(hintsRequest.downloadHandler.text);
+            question.Hints = hints;
+
+            if (question.Hints == null || question.Hints.Count < 3)
+            {
+                Debug.LogError($"Question {question.Id} does not have enough hints.");
+                yield break;
+            }
+        }
+
+        // After fetching the questions and hints, display the next unanswered question
+        DisplayNextUnansweredQuestion();
+    }
+
+
+    public void GiveHint(int hintLevel)
+    {
+        // Check if questions have been fetched and the current index is within bounds
+        if (questions == null || questions.Count == 0)
+        {
+            Debug.LogError("Questions list is null or empty.");
+            return;
+        }
+
+        if (currentQuestionIndex >= questions.Count)
+        {
+            Debug.LogError("Questions list is out of bounds. Check if the currentQuestionIndex is correct.");
+            return;
+        }
+
+        QuestionModel currentQuestion = questions[currentQuestionIndex];
+
+        // Fetch the appropriate hint based on the hintLevel provided by the RL agent
+        HintModel selectedHint = currentQuestion.Hints.Find(h => h.HintLevel == hintLevel);
+        if (selectedHint != null)
+        {
+            hintText.text = selectedHint.HintText; // Display the hint in the UI
+            hintAgent.AddReward(-0.1f); // Optional: Small penalty for using a hint
+            hintAgent.EndEpisode(); // End the episode after hint is given
         }
         else
         {
-            questions = JsonConvert.DeserializeObject<List<QuestionModel>>(request.downloadHandler.text);
-            // Ensure each question has exactly 3 hints
-            foreach (var question in questions)
-            {
-                string hintsUrl = $"{apiUrl}/getHintsForQuestion?questionId={question.Id}";
-                UnityWebRequest hintsRequest = UnityWebRequest.Get(hintsUrl);
-                yield return hintsRequest.SendWebRequest();
-
-                if (hintsRequest.result == UnityWebRequest.Result.ConnectionError || hintsRequest.result == UnityWebRequest.Result.ProtocolError)
-                {
-                    Debug.LogError("Error fetching hints: " + hintsRequest.error);
-                }
-                else
-                {
-                    List<HintModel> hints = JsonConvert.DeserializeObject<List<HintModel>>(hintsRequest.downloadHandler.text);
-                    question.Hints = hints;
-
-                    if (question.Hints == null || question.Hints.Count < 3)
-                    {
-                        Debug.LogError($"Question {question.Id} does not have enough hints.");
-                    }
-                }
-            }
-
-            DisplayNextUnansweredQuestion();
+            Debug.LogError("No hints available for this question.");
         }
     }
 
-    // Fetch hint based on question ID
-    public IEnumerator GiveHint(int questionId)
-    {
-        // The agent decides which hint level to give
-        int hintLevel = hintAgent.DecideHintLevel(); // Implement this in HintAgent
 
-        if (questions != null && currentQuestionIndex < questions.Count)
-        {
-            QuestionModel currentQuestion = questions[currentQuestionIndex];
-
-            // Fetch the appropriate hint based on hintLevel
-            HintModel selectedHint = currentQuestion.Hints.Find(h => h.HintLevel == hintLevel);
-            if (selectedHint != null)
-            {
-                hintText.text = selectedHint.HintText; // Display the hint in the UI
-                hintAgent.AddReward(-0.1f); // Optional: Penalty for using a hint
-                hintAgent.EndEpisode();
-            }
-            else
-            {
-                Debug.LogError("No hints available for this question.");
-            }
-        }
-
-        yield break; // Ensure all code paths return a value
-    }
 
 
     // Display the next unanswered question
@@ -141,6 +171,11 @@ public class FetchQuestions : MonoBehaviour
     // Display a specific question
     void DisplayQuestion(QuestionModel question)
     {
+        if (question == null)
+        {
+            Debug.LogError("Attempted to display a null question.");
+            return;
+        }
         questionText.text = question.QuestionText;
         optionButtons[0].GetComponentInChildren<TMP_Text>().text = question.AnswerOption1;
         optionButtons[1].GetComponentInChildren<TMP_Text>().text = question.AnswerOption2;

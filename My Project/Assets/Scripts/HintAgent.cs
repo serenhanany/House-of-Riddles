@@ -9,6 +9,8 @@ using TMPro;
 
 
 
+
+
 public class HintAgent : Agent
 {
     public TMP_Text hintText;
@@ -25,12 +27,20 @@ public class HintAgent : Agent
             return;
         }
 
+        if (!fetchQuestions.questionsLoaded)
+        {
+            Debug.LogWarning("Questions are not yet loaded. Waiting to start episode...");
+           this.enabled = false;
+            return; // Do not start the episode until questions are loaded
+        }
+
         hintGiven = false;
         currentQuestion = fetchQuestions.GetCurrentQuestion(); // Get the current question from FetchQuestions
 
         if (currentQuestion == null)
         {
             Debug.LogError("No current question available.");
+            return;
         }
     }
 
@@ -44,19 +54,25 @@ public class HintAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        if (!fetchQuestions.questionsLoaded)
+        {
+            Debug.LogError("Questions are not loaded yet. Cannot give a hint.");
+           // EndEpisode();
+            return;
+        }
         int action = actions.DiscreteActions[0];
 
         // Action 0 = Easy hint, Action 1 = Medium hint, Action 2 = Hard hint
         switch (action)
         {
             case 0:
-                GiveHint(1); // Easy hint (level 1)
+                fetchQuestions.GiveHint(1); // Easy hint (level 1)
                 break;
             case 1:
-                GiveHint(2); // Medium hint (level 2)
+                fetchQuestions.GiveHint(2); // Medium hint (level 2)
                 break;
             case 2:
-                GiveHint(3); // Hard hint (level 3)
+                fetchQuestions.GiveHint(3); // Hard hint (level 3)
                 break;
         }
 
@@ -75,12 +91,8 @@ public class HintAgent : Agent
         EndEpisode(); // End the episode after a decision is made
     }
 
-    // New method: DecideHintLevel
-    public int DecideHintLevel()
-    {
-        // For now, randomly decide between hint levels 1 (easy), 2 (medium), or 3 (hard)
-        return Random.Range(1, 4); // This can be replaced with a learned decision from the RL model
-    }
+
+
 
     // Function to provide hints based on hint level (easy = 1, medium = 2, hard = 3)
     private void GiveHint(int hintLevel)

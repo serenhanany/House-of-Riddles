@@ -1,12 +1,16 @@
 cd C:\Users\סירין\Desktop\House-of-Riddles\My Project
-venv39\Scripts\activate
+new_venv\Scripts\activate
 
 mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=my_first_run --no-graphics --resume
 mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=my_first_run --base-port=5005
 
 
 
-new_venv\Scripts\activate
-mlagents-learn --help
-Python --version
-mlagents-learn  --force
+
+
+pip install --upgrade mlagents
+pip install --upgrade mlagents-envs
+
+mlagents-learn --version
+mlagents-learn --force
+mlagents-learn --no-graphics --force

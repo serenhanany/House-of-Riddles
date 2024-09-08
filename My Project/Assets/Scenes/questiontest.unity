@@ -1566,8 +1566,8 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 1000
-  hintText: {fileID: 0}
-  fetchQuestions: {fileID: 0}
+  hintText: {fileID: 1763644360}
+  fetchQuestions: {fileID: 1662574083}
   playerScore: 0
 --- !u!4 &1554586466
 Transform:
