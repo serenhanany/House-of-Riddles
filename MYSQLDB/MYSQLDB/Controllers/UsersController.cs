@@ -69,18 +69,16 @@ public class UsersController : ControllerBase
             return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
         }
     }
-
     [HttpGet("getQuestion")]
-    public async Task<IActionResult> GetQuestion(int playerLevel)
+    public async Task<IActionResult> GetQuestion()
     {
-        // Get questions based on the player's level using the new recommended_level column
+        // Fetch all questions without filtering by level
         var questions = await _context.Questions
-                                      .Where(q => q.RecommendedLevel <= playerLevel)
                                       .ToListAsync();
 
         if (questions == null || questions.Count == 0)
         {
-            return NotFound(new { Message = "No questions found for this level" });
+            return NotFound(new { Message = "No questions found" });
         }
 
         // Optionally fetch hints for each question
@@ -94,6 +92,31 @@ public class UsersController : ControllerBase
         // Return the list of questions along with their hints
         return Ok(questions);
     }
+
+    /* [HttpGet("getQuestion")]
+     public async Task<IActionResult> GetQuestion(int playerLevel)
+     {
+         // Get questions based on the player's level using the new recommended_level column
+         var questions = await _context.Questions
+                                       .Where(q => q.RecommendedLevel <= playerLevel)
+                                       .ToListAsync();
+
+         if (questions == null || questions.Count == 0)
+         {
+             return NotFound(new { Message = "No questions found for this level" });
+         }
+
+         // Optionally fetch hints for each question
+         foreach (var question in questions)
+         {
+             question.Hints = await _context.QuestionHints
+                                            .Where(h => h.QuestionId == question.Id)
+                                            .ToListAsync();
+         }
+
+         // Return the list of questions along with their hints
+         return Ok(questions);
+     }*/
 
     // POST: api/Users/recordAnswer
     [HttpPost("recordAnswer")]

@@ -8,9 +8,6 @@ using TMPro;
 
 
 
-
-
-
 public class HintAgent : Agent
 {
     public TMP_Text hintText;
@@ -79,13 +76,17 @@ public class HintAgent : Agent
         string selectedAnswer = fetchQuestions.GetSelectedAnswer();
         bool answeredCorrectly = fetchQuestions.CheckIfAnswerCorrect(selectedAnswer);
 
-        if (answeredCorrectly)
+        if (answeredCorrectly && !hintGiven)
         {
-            AddReward(1.0f); // Reward for correct answer
+            AddReward(2.0f);  // Greater reward if no hint was given and correct answer
+        }
+        else if (answeredCorrectly)
+        {
+            AddReward(1.0f);  // Regular reward for a correct answer with hints
         }
         else
         {
-            AddReward(-1.0f); // Penalty for incorrect answer
+            AddReward(-1.0f);  // Penalty for incorrect answer
         }
 
         EndEpisode(); // End the episode after a decision is made

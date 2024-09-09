@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 
 
 
+
+
+
 public class FetchQuestions : MonoBehaviour
 {
     public bool questionsLoaded = false;
@@ -50,7 +53,9 @@ public class FetchQuestions : MonoBehaviour
     // Fetch questions based on player level
     IEnumerator FetchQuestionsFromDB(int playerLevel)
     {
-        string url = $"{apiUrl}/getQuestion?playerLevel={playerLevel}";
+        string url = $"{apiUrl}/getQuestion";  // No player level specified, fetch all questions
+
+        //string url = $"{apiUrl}/getQuestion?playerLevel={playerLevel}";
         UnityWebRequest request = UnityWebRequest.Get(url);
         yield return request.SendWebRequest();
 
@@ -71,6 +76,7 @@ public class FetchQuestions : MonoBehaviour
             questionsLoaded = false;
             yield break; // Exit the coroutine if no questions are available
         }
+        Debug.Log("Total questions fetched: " + questions.Count);
 
         questionsLoaded = true;
 
@@ -83,13 +89,16 @@ public class FetchQuestions : MonoBehaviour
 
         foreach (var question in questions)
         {
+
+            Debug.Log("Fetching hints for question ID: " + question.Id);
+
             string hintsUrl = $"{apiUrl}/getHint?questionId={question.Id}";
             UnityWebRequest hintsRequest = UnityWebRequest.Get(hintsUrl);
             yield return hintsRequest.SendWebRequest();
 
             if (hintsRequest.result == UnityWebRequest.Result.ConnectionError || hintsRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                Debug.LogError("Error fetching hints: " + hintsRequest.error);
+                Debug.LogError($"Error fetching hints for question ID: {question.Id} - {hintsRequest.error}");
                 yield break; // Handle error in fetching hints
             }
 
@@ -102,7 +111,7 @@ public class FetchQuestions : MonoBehaviour
                 yield break;
             }
         }
-
+        Debug.Log("All questions and hints have been processed.");
         // After fetching the questions and hints, display the next unanswered question
         DisplayNextUnansweredQuestion();
     }
@@ -164,7 +173,8 @@ public class FetchQuestions : MonoBehaviour
         }
         else
         {
-            Debug.Log("All questions answered.");
+            Debug.Log("All questions answered. Total questions answered: " + answeredQuestionIds.Count);
+            EndGame();
         }
     }
 
@@ -176,6 +186,8 @@ public class FetchQuestions : MonoBehaviour
             Debug.LogError("Attempted to display a null question.");
             return;
         }
+
+        Debug.Log("Displaying question index: " + currentQuestionIndex + ", Question ID: " + question.Id);
         questionText.text = question.QuestionText;
         optionButtons[0].GetComponentInChildren<TMP_Text>().text = question.AnswerOption1;
         optionButtons[1].GetComponentInChildren<TMP_Text>().text = question.AnswerOption2;
@@ -210,8 +222,17 @@ public class FetchQuestions : MonoBehaviour
 
             hintAgent.AddReward(1.0f); // Reward the agent
             hintAgent.EndEpisode(); // End the episode for the agent
-            currentQuestionIndex++;
-            DisplayNextUnansweredQuestion();
+            if (currentQuestionIndex < questions.Count - 1)
+            {
+                currentQuestionIndex++;
+                Debug.Log("Moving to next question. Current question index: " + currentQuestionIndex);
+                DisplayNextUnansweredQuestion();
+            }
+            else
+            {
+                Debug.Log("All questions answered.");
+                EndGame(); // If no more questions are left, handle game end
+            }
         }
         else
         {
@@ -224,7 +245,7 @@ public class FetchQuestions : MonoBehaviour
     // Update the player's score on the UI
     void UpdateScoreText()
     {
-        scoreText.text = "Score: " + playerScore.ToString();
+        scoreText.text =playerScore.ToString();
     }
 
     public QuestionModel GetCurrentQuestion()
@@ -255,5 +276,20 @@ public class FetchQuestions : MonoBehaviour
     {
         selectedAnswer = answer; // Store the player's selected answer
     }
+    void EndGame()
+    {
+        Debug.Log("All questions have been answered. The game is over.");
+
+        // Optionally, you could display a message to the player
+        questionText.text = "Quiz Complete! Your final score is: " + playerScore;
+
+        // disable buttons to prevent further input
+        foreach (Button button in optionButtons)
+        {
+            button.interactable = false;
+        }
+
+    }
+
 }
 
