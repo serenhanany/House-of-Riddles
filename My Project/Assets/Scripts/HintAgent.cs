@@ -15,6 +15,7 @@ public class HintAgent : Agent
     private QuestionModel currentQuestion;
     public int playerScore;
     private bool hintGiven;
+    private float questionStartTime;
 
     public override void OnEpisodeBegin()
     {
@@ -33,7 +34,7 @@ public class HintAgent : Agent
 
         hintGiven = false;
         currentQuestion = fetchQuestions.GetCurrentQuestion(); // Get the current question from FetchQuestions
-
+        questionStartTime = Time.time;
         if (currentQuestion == null)
         {
             Debug.LogError("No current question available.");
@@ -41,12 +42,17 @@ public class HintAgent : Agent
         }
     }
 
-
+    public void StartQuestionTimer()
+    {
+        questionStartTime = Time.time;  // Set the start time when the question is presented
+    }
     public override void CollectObservations(VectorSensor sensor)
     {
         // Observe player's score and whether a hint was given
         sensor.AddObservation(playerScore);
         sensor.AddObservation(hintGiven ? 1.0f : 0.0f);
+        float timeSpent = Time.time - questionStartTime;
+        sensor.AddObservation(timeSpent);
     }
 
     public override void OnActionReceived(ActionBuffers actions)

@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 
 public class FetchQuestions : MonoBehaviour
 {
+    
     public bool questionsLoaded = false;
     private string selectedAnswer;
     public TMP_Text questionText;
@@ -188,6 +189,9 @@ public class FetchQuestions : MonoBehaviour
         }
 
         Debug.Log("Displaying question index: " + currentQuestionIndex + ", Question ID: " + question.Id);
+      
+        hintAgent.StartQuestionTimer();
+
         questionText.text = question.QuestionText;
         optionButtons[0].GetComponentInChildren<TMP_Text>().text = question.AnswerOption1;
         optionButtons[1].GetComponentInChildren<TMP_Text>().text = question.AnswerOption2;
@@ -208,6 +212,7 @@ public class FetchQuestions : MonoBehaviour
     // Handle the selected answer
     void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
     {
+        float timeTaken = Time.time - questionStartTime;
         bool answeredCorrectly = selectedAnswer == correctAnswer;
 
         if (answeredCorrectly)
@@ -220,7 +225,7 @@ public class FetchQuestions : MonoBehaviour
                 answeredQuestionIds.Add(questionId);
             }
 
-            hintAgent.AddReward(1.0f); // Reward the agent
+            hintAgent.AddReward(1.0f / timeTaken);  // Reward the agent
             hintAgent.EndEpisode(); // End the episode for the agent
             if (currentQuestionIndex < questions.Count - 1)
             {
