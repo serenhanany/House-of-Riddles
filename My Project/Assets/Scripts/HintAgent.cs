@@ -8,6 +8,7 @@ using TMPro;
 
 
 
+
 public class HintAgent : Agent
 {
     public TMP_Text hintText;
@@ -54,7 +55,7 @@ public class HintAgent : Agent
         float timeSpent = Time.time - questionStartTime;
         sensor.AddObservation(timeSpent);
     }
-
+    /*
     public override void OnActionReceived(ActionBuffers actions)
     {
         if (!fetchQuestions.questionsLoaded)
@@ -96,7 +97,62 @@ public class HintAgent : Agent
         }
 
         EndEpisode(); // End the episode after a decision is made
+    }*/
+    public override void OnActionReceived(ActionBuffers actions)
+    {
+        if (!fetchQuestions.questionsLoaded)
+        {
+            Debug.LogError("Questions are not loaded yet. Cannot give a hint.");
+            return;
+        }
+
+        int action = actions.DiscreteActions[0];  // The agent selects a hint level
+        float baseReward = 3.0f;  // Start with a high reward for no hints
+
+        // Action 0 = Easy hint, Action 1 = Medium hint, Action 2 = Hard hint
+        switch (action)
+        {
+            case 0:
+                fetchQuestions.GiveHint(1);  // Easy hint (level 1)
+                baseReward -= 0.5f;  // Small deduction for an easy hint
+                Debug.Log("Easy hint given.");
+                break;
+            case 1:
+                fetchQuestions.GiveHint(2);  // Medium hint (level 2)
+                baseReward -= 1.0f;  // Medium deduction for a medium hint
+                Debug.Log("Medium hint given.");
+                break;
+            case 2:
+                fetchQuestions.GiveHint(3);  // Hard hint (level 3)
+                baseReward -= 1.5f;  // Largest deduction for a hard hint
+                Debug.Log("Hard hint given.");
+                break;
+        }
+
+        string selectedAnswer = fetchQuestions.GetSelectedAnswer();
+        bool answeredCorrectly = fetchQuestions.CheckIfAnswerCorrect(selectedAnswer);
+
+        // Track time taken to answer the question
+
+        float timeTaken = Time.time - fetchQuestions.questionStartTime;
+        float timePenalty = Mathf.Clamp(1.0f / timeTaken, 0.1f, 1.0f);  // Adjust reward based on time taken
+
+        if (answeredCorrectly)
+        {
+            // Reward based on hint level and time taken
+            AddReward(baseReward * timePenalty);
+            Debug.Log($"Correct answer! Base reward: {baseReward}, Time penalty applied: {timePenalty}");
+        }
+        else
+        {
+            // Penalty for incorrect answer
+            AddReward(-1.5f);
+            Debug.Log("Incorrect answer. Penalty applied.");
+        }
+
+        EndEpisode();  // End the episode after a decision is made
     }
+
 
 
 

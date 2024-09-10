@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 
 
 
+
 public class FetchQuestions : MonoBehaviour
 {
     
@@ -27,7 +28,7 @@ public class FetchQuestions : MonoBehaviour
     private HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/users";
     public int predefinedLevel = 1;
-    private float questionStartTime;
+    public float questionStartTime;
 
     // Reference to the RL agent for hinting
     public HintAgent hintAgent;
@@ -283,16 +284,21 @@ public class FetchQuestions : MonoBehaviour
     }
     void EndGame()
     {
-        Debug.Log("All questions have been answered. The game is over.");
+        Debug.Log("All questions have been answered. Resetting for another round of training.");
 
-        // Optionally, you could display a message to the player
-        questionText.text = "Quiz Complete! Your final score is: " + playerScore;
+        // Instead of ending the game, reset the questions and start over
+        currentQuestionIndex = 0;
+        answeredQuestionIds.Clear();  // Clear answered questions
+        hintAgent.EndEpisode();  // Reset the agent
 
-        // disable buttons to prevent further input
+        // Re-enable the buttons for the new round
         foreach (Button button in optionButtons)
         {
-            button.interactable = false;
+            button.interactable = true;
         }
+
+        // Restart the question loop
+        DisplayNextUnansweredQuestion();
 
     }
 
