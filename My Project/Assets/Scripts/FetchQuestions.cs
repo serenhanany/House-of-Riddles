@@ -5,10 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
 using Newtonsoft.Json;
-
-
-
-
+using System.Diagnostics;
 
 
 
@@ -242,6 +239,8 @@ public class FetchQuestions : MonoBehaviour
         }
         else
         {
+            playerScore -= 5;  // Penalty for incorrect answer
+            UpdateScoreText();
             hintAgent.AddReward(-1.0f); // Penalize for wrong answer
             hintAgent.EndEpisode(); // End the episode for the agent
             Debug.Log("Incorrect answer.");
@@ -300,6 +299,31 @@ public class FetchQuestions : MonoBehaviour
         // Restart the question loop
         DisplayNextUnansweredQuestion();
 
+    }
+    public string GetCorrectAnswer()
+    {
+        if (questions != null && currentQuestionIndex < questions.Count)
+        {
+            return questions[currentQuestionIndex].CorrectAnswer;  // Assuming each question has a 'CorrectAnswer' property
+        }
+        else
+        {
+            Debug.LogError("Unable to fetch the correct answer. Make sure questions are loaded and currentQuestionIndex is valid.");
+            return string.Empty;  // Return an empty string in case of an error
+        }
+    }
+
+    public string GetAnswerByIndex(int answerIndex)
+    {
+        if (currentQuestionIndex < questions.Count && answerIndex < questions[currentQuestionIndex].Answers.Length)
+        {
+            return questions[currentQuestionIndex].Answers[answerIndex];  // Returns the selected answer
+        }
+        else
+        {
+            Debug.LogError("Invalid answer index selected.");
+            return string.Empty;
+        }
     }
 
 }

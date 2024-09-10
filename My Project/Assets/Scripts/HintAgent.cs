@@ -5,6 +5,9 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using TMPro;
+using System.Diagnostics;
+
+
 
 
 
@@ -98,6 +101,66 @@ public class HintAgent : Agent
 
         EndEpisode(); // End the episode after a decision is made
     }*/
+    /* public override void OnActionReceived(ActionBuffers actions)
+     {
+         if (!fetchQuestions.questionsLoaded)
+         {
+             Debug.LogError("Questions are not loaded yet. Cannot give a hint.");
+             return;
+         }
+         string selectedAnswer = fetchQuestions.GetSelectedAnswer();
+         if (string.IsNullOrEmpty(selectedAnswer))
+         {
+             Debug.LogWarning("No answer selected yet. Waiting for player to select an answer.");
+             return;  // Wait for the player to select an answer
+         }
+
+         int action = actions.DiscreteActions[0];  // The agent selects a hint level
+         float baseReward = 3.0f;  // Start with a high reward for no hints
+
+         // Action 0 = Easy hint, Action 1 = Medium hint, Action 2 = Hard hint
+         switch (action)
+         {
+             case 0:
+                 fetchQuestions.GiveHint(1);  // Easy hint (level 1)
+                 baseReward -= 0.5f;  // Small deduction for an easy hint
+                 Debug.Log("Easy hint given.");
+                 break;
+             case 1:
+                 fetchQuestions.GiveHint(2);  // Medium hint (level 2)
+                 baseReward -= 1.0f;  // Medium deduction for a medium hint
+                 Debug.Log("Medium hint given.");
+                 break;
+             case 2:
+                 fetchQuestions.GiveHint(3);  // Hard hint (level 3)
+                 baseReward -= 1.5f;  // Largest deduction for a hard hint
+                 Debug.Log("Hard hint given.");
+                 break;
+         }
+
+         //string selectedAnswer = fetchQuestions.GetSelectedAnswer();
+         bool answeredCorrectly = fetchQuestions.CheckIfAnswerCorrect(selectedAnswer);
+         string correctAnswer = fetchQuestions.GetCorrectAnswer();
+         // Track time taken to answer the question
+         Debug.Log($"Selected Answer: {selectedAnswer}, Correct Answer: {correctAnswer}");
+         float timeTaken = Time.time - fetchQuestions.questionStartTime;
+         float timePenalty = Mathf.Clamp(1.0f / timeTaken, 0.1f, 1.0f);  // Adjust reward based on time taken
+
+         if (answeredCorrectly)
+         {
+             // Reward based on hint level and time taken
+             AddReward(baseReward * timePenalty);
+             Debug.Log($"Correct answer! Base reward: {baseReward}, Time penalty applied: {timePenalty}");
+         }
+         else
+         {
+             // Penalty for incorrect answer
+             AddReward(-1.5f);
+             Debug.Log("Incorrect answer. Penalty applied.");
+         }
+
+         EndEpisode();  // End the episode after a decision is made
+     }*/
     public override void OnActionReceived(ActionBuffers actions)
     {
         if (!fetchQuestions.questionsLoaded)
@@ -106,11 +169,14 @@ public class HintAgent : Agent
             return;
         }
 
-        int action = actions.DiscreteActions[0];  // The agent selects a hint level
+        // Action 0 = hint level, Action 1 = answer selection (0 to number of answers - 1)
+        int hintAction = actions.DiscreteActions[0];  // The agent selects a hint level
+        int answerAction = actions.DiscreteActions[1];  // The agent selects an answer
+
         float baseReward = 3.0f;  // Start with a high reward for no hints
 
-        // Action 0 = Easy hint, Action 1 = Medium hint, Action 2 = Hard hint
-        switch (action)
+        // Give a hint based on the agent's selected hint level
+        switch (hintAction)
         {
             case 0:
                 fetchQuestions.GiveHint(1);  // Easy hint (level 1)
@@ -129,11 +195,14 @@ public class HintAgent : Agent
                 break;
         }
 
-        string selectedAnswer = fetchQuestions.GetSelectedAnswer();
+        // Simulate answer selection by the agent
+        string selectedAnswer = fetchQuestions.GetAnswerByIndex(answerAction);  // Agent selects an answer by index
+        string correctAnswer = fetchQuestions.GetCorrectAnswer();
         bool answeredCorrectly = fetchQuestions.CheckIfAnswerCorrect(selectedAnswer);
 
-        // Track time taken to answer the question
+        Debug.Log($"Selected Answer: {selectedAnswer}, Correct Answer: {correctAnswer}");
 
+        // Track time taken to answer the question
         float timeTaken = Time.time - fetchQuestions.questionStartTime;
         float timePenalty = Mathf.Clamp(1.0f / timeTaken, 0.1f, 1.0f);  // Adjust reward based on time taken
 
@@ -152,6 +221,7 @@ public class HintAgent : Agent
 
         EndEpisode();  // End the episode after a decision is made
     }
+
 
 
 
