@@ -8,13 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HomePage.unity
     guid: 3072874f46e353e45b50214c10b9f1fc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Game.unity
     guid: 515cc6110ad2ed746bba2117e98cc16b
   - enabled: 1
     path: Assets/Scenes/Login.unity
     guid: 668f1866230faaa4ba59c914da2921a2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Practice.unity
     guid: 33a813a21aca55a408ed7b463ce38eca
   - enabled: 1
@@ -32,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Buildings.unity
     guid: 9b55066e9059e17428109fb9f93d95ca
+  - enabled: 1
+    path: Assets/Scenes/Buildings 2.unity
+    guid: 8fb1fbb13b17e484cbd0c8cf366428bd
   m_configObjects: {}

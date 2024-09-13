@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 
 
+
 public class LoginScript : MonoBehaviour
 {
     public TMP_InputField usernameField;
@@ -78,8 +79,7 @@ public class LoginScript : MonoBehaviour
             Debug.Log("Response: " + request.downloadHandler.text);
             if (request.responseCode == 200)
             {
-                Debug.Log("Login successful!");
-                messageText.text = "Login successful!";
+                
 
                 // Parse the server response and store the player data
                 LoginResponse response = JsonConvert.DeserializeObject<LoginResponse>(request.downloadHandler.text);
@@ -92,9 +92,10 @@ public class LoginScript : MonoBehaviour
                     if (PlayerData.Instance != null)
                     {
                         PlayerData.Instance.SetPlayerData(response.UserId, response.Username, response.Level);
-
+                        Debug.Log("Login successful!");
+                        messageText.text = "Login successful!";
                         // Navigate to the next scene
-                        SceneManager.LoadScene("Buildings");
+                        SceneManager.LoadScene("Q1");
                     }
                     else
                     {

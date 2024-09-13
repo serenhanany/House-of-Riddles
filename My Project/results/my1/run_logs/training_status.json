@@ -1,0 +1,29 @@
+{
+    "HintBehavior": {
+        "checkpoints": [
+            {
+                "steps": 558,
+                "file_path": "results\\my1\\HintBehavior\\HintBehavior-558.onnx",
+                "reward": -0.009999999776482582,
+                "creation_time": 1726148968.4305854,
+                "auxillary_file_paths": [
+                    "results\\my1\\HintBehavior\\HintBehavior-558.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 558,
+            "file_path": "results\\my1\\HintBehavior.onnx",
+            "reward": -0.009999999776482582,
+            "creation_time": 1726148968.4305854,
+            "auxillary_file_paths": [
+                "results\\my1\\HintBehavior\\HintBehavior-558.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "2.4.0+cpu"
+    }
+}

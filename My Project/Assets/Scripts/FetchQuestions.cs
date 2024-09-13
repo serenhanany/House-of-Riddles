@@ -5,13 +5,18 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
 using Newtonsoft.Json;
-using System.Diagnostics;
+
+
+
+
+
 
 
 
 public class FetchQuestions : MonoBehaviour
 {
-    
+    public int maxAttemptsPerQuestion = 3;  
+    public int AttemptsRemaining { get;  set; }  
     public bool questionsLoaded = false;
     private string selectedAnswer;
     public TMP_Text questionText;
@@ -19,10 +24,12 @@ public class FetchQuestions : MonoBehaviour
     public Button hintButton;
     public TMP_Text hintText;
     public TMP_Text scoreText;
-    private int playerScore = 0;
+    public int playerScore = 0;
     private int currentQuestionIndex = 0;
     private List<QuestionModel> questions;
-    private HashSet<int> answeredQuestionIds = new HashSet<int>();
+    public List<QuestionModel> Questions { get { return questions; } }
+    public QuestionModel currentQuestion { get; private set; }
+    public HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/users";
     public int predefinedLevel = 1;
     public float questionStartTime;
@@ -34,7 +41,7 @@ public class FetchQuestions : MonoBehaviour
     {
         // Fetch questions from the server or database based on the player's predefined level
         StartCoroutine(FetchQuestionsFromDB(predefinedLevel));
-
+        AttemptsRemaining = maxAttemptsPerQuestion;
         // No need to use hintButton since the RL agent decides when to give a hint
         if (hintButton != null)
         {
@@ -45,16 +52,30 @@ public class FetchQuestions : MonoBehaviour
         UpdateScoreText();
     }
 
+    public void ResetAttempts()
+    {
+        AttemptsRemaining = maxAttemptsPerQuestion;
+    }
 
+    public bool MoveToNextUnansweredQuestion()
+    {
+        if (currentQuestionIndex < questions.Count - 1)
+        {
+            currentQuestionIndex++;
+            ResetAttempts();  // Reset attempts when moving to the next question
+            DisplayNextUnansweredQuestion();
+            return true;
+        }
+        else
+        {
+            Debug.Log("No more unanswered questions.");
+            return false;  // No more questions
+        }
+    }
 
-
-
-    // Fetch questions based on player level
     IEnumerator FetchQuestionsFromDB(int playerLevel)
     {
         string url = $"{apiUrl}/getQuestion";  // No player level specified, fetch all questions
-
-        //string url = $"{apiUrl}/getQuestion?playerLevel={playerLevel}";
         UnityWebRequest request = UnityWebRequest.Get(url);
         yield return request.SendWebRequest();
 
@@ -77,19 +98,9 @@ public class FetchQuestions : MonoBehaviour
         }
         Debug.Log("Total questions fetched: " + questions.Count);
 
-        questionsLoaded = true;
-
-        if (hintAgent != null)
-        {
-            hintAgent.enabled = true;  // Re-enable the agent's decision-making
-            hintAgent.OnEpisodeBegin();  // Manually trigger OnEpisodeBegin() again to start the episode
-        }
-
-
         foreach (var question in questions)
         {
-
-            Debug.Log("Fetching hints for question ID: " + question.Id);
+            //Debug.Log("Fetching hints for question ID: " + question.Id);
 
             string hintsUrl = $"{apiUrl}/getHint?questionId={question.Id}";
             UnityWebRequest hintsRequest = UnityWebRequest.Get(hintsUrl);
@@ -97,8 +108,8 @@ public class FetchQuestions : MonoBehaviour
 
             if (hintsRequest.result == UnityWebRequest.Result.ConnectionError || hintsRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                Debug.LogError($"Error fetching hints for question ID: {question.Id} - {hintsRequest.error}");
-                yield break; // Handle error in fetching hints
+                Debug.LogError($"Error fetching hints for question ID: {question.Id} - {hintsRequest.error}. Skipping this question's hints.");
+                continue; // Continue to next question even if fetching hints fails
             }
 
             List<HintModel> hints = JsonConvert.DeserializeObject<List<HintModel>>(hintsRequest.downloadHandler.text);
@@ -106,14 +117,25 @@ public class FetchQuestions : MonoBehaviour
 
             if (question.Hints == null || question.Hints.Count < 3)
             {
-                Debug.LogError($"Question {question.Id} does not have enough hints.");
-                yield break;
+                Debug.LogError($"Question {question.Id} does not have enough hints. Skipping this question's hints.");
+                continue;
             }
         }
+
+        questionsLoaded = true; // Set to true after all questions and hints are fetched
         Debug.Log("All questions and hints have been processed.");
+
+        // Re-enable the agent if it's disabled
+        if (hintAgent != null && !hintAgent.enabled && questionsLoaded)
+        {
+            hintAgent.enabled = true;  // Re-enable the agent's decision-making
+            hintAgent.OnEpisodeBegin();  // Manually trigger OnEpisodeBegin() again to start the episode
+        }
+
         // After fetching the questions and hints, display the next unanswered question
         DisplayNextUnansweredQuestion();
     }
+
 
 
     public void GiveHint(int hintLevel)
@@ -138,7 +160,7 @@ public class FetchQuestions : MonoBehaviour
         if (selectedHint != null)
         {
             hintText.text = selectedHint.HintText; // Display the hint in the UI
-            hintAgent.AddReward(-0.1f); // Optional: Small penalty for using a hint
+            hintAgent.AddReward(-0.01f); // Optional: Small penalty for using a hint
             hintAgent.EndEpisode(); // End the episode after hint is given
         }
         else
@@ -151,23 +173,41 @@ public class FetchQuestions : MonoBehaviour
 
 
     // Display the next unanswered question
-    void DisplayNextUnansweredQuestion()
+    public void DisplayNextUnansweredQuestion()
     {
-        hintText.text = "";
+       // hintText.text = "";
 
         if (questions == null || questions.Count == 0)
         {
             Debug.LogError("No questions available.");
             return;
         }
+        //Debug.Log($"Initial currentQuestionIndex: {currentQuestionIndex}, Questions Count: {questions.Count}");
+
+        if (!answeredQuestionIds.Contains(questions[currentQuestionIndex].Id))
+        {
+            answeredQuestionIds.Add(questions[currentQuestionIndex].Id);
+        }
+        // Check the contents of answeredQuestionIds
+        //Debug.Log("Answered Question IDs: " + string.Join(", ", answeredQuestionIds));
+
+        // Check if the current question is in answeredQuestionIds
+        if (currentQuestionIndex < questions.Count)
+        {
+            Debug.Log($"Current Question ID: {questions[currentQuestionIndex].Id}");
+        }
 
         while (currentQuestionIndex < questions.Count && answeredQuestionIds.Contains(questions[currentQuestionIndex].Id))
         {
+
+            //Debug.LogError($"Question ID {questions[currentQuestionIndex].Id} has already been answered.");
             currentQuestionIndex++;
+           // Debug.LogError($"Incremented currentQuestionIndex: {currentQuestionIndex}");
         }
 
         if (currentQuestionIndex < questions.Count)
         {
+            Debug.Log($"Displaying question ID: {questions[currentQuestionIndex].Id}");
             DisplayQuestion(questions[currentQuestionIndex]);
         }
         else
@@ -191,24 +231,31 @@ public class FetchQuestions : MonoBehaviour
         hintAgent.StartQuestionTimer();
 
         questionText.text = question.QuestionText;
-        optionButtons[0].GetComponentInChildren<TMP_Text>().text = question.AnswerOption1;
-        optionButtons[1].GetComponentInChildren<TMP_Text>().text = question.AnswerOption2;
-        optionButtons[2].GetComponentInChildren<TMP_Text>().text = question.AnswerOption3;
-        optionButtons[3].GetComponentInChildren<TMP_Text>().text = question.AnswerOption4;
-
+        if (optionButtons[0].GetComponentInChildren<TMP_Text>() != null &&
+        optionButtons[1].GetComponentInChildren<TMP_Text>() != null &&
+        optionButtons[2].GetComponentInChildren<TMP_Text>() != null &&
+        optionButtons[3].GetComponentInChildren<TMP_Text>() != null)
+        {
+            optionButtons[0].GetComponentInChildren<TMP_Text>().text = question.AnswerOption1;
+            optionButtons[1].GetComponentInChildren<TMP_Text>().text = question.AnswerOption2;
+            optionButtons[2].GetComponentInChildren<TMP_Text>().text = question.AnswerOption3;
+            optionButtons[3].GetComponentInChildren<TMP_Text>().text = question.AnswerOption4;
+        }
+        else
+        {
+            Debug.LogError("One or more buttons are missing a TMP_Text component.");
+        } /*
         foreach (Button button in optionButtons)
         {
             button.onClick.RemoveAllListeners();
         }
-
+        
         optionButtons[0].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption1, question.CorrectAnswer, question.Id));
         optionButtons[1].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption2, question.CorrectAnswer, question.Id));
         optionButtons[2].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption3, question.CorrectAnswer, question.Id));
-        optionButtons[3].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption4, question.CorrectAnswer, question.Id));
+        optionButtons[3].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption4, question.CorrectAnswer, question.Id));*/
     }
-
-    // Handle the selected answer
-    void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
+    public void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
     {
         float timeTaken = Time.time - questionStartTime;
         bool answeredCorrectly = selectedAnswer == correctAnswer;
@@ -222,35 +269,46 @@ public class FetchQuestions : MonoBehaviour
             {
                 answeredQuestionIds.Add(questionId);
             }
+            Debug.Log("Answered Question IDs: " + string.Join(", ", answeredQuestionIds));
 
-            hintAgent.AddReward(1.0f / timeTaken);  // Reward the agent
-            hintAgent.EndEpisode(); // End the episode for the agent
+            // Reward the agent based on time taken to answer
+            hintAgent.AddReward(1.0f / timeTaken);
+            hintAgent.EndEpisode();  // End the episode
+
             if (currentQuestionIndex < questions.Count - 1)
             {
                 currentQuestionIndex++;
                 Debug.Log("Moving to next question. Current question index: " + currentQuestionIndex);
-                DisplayNextUnansweredQuestion();
+                DisplayNextUnansweredQuestion();  // Display the next question
+               // Debug.Log("Question transitioned, now ending the episode.");
             }
             else
             {
                 Debug.Log("All questions answered.");
-                EndGame(); // If no more questions are left, handle game end
+                EndGame();  // Handle game end if all questions are answered
             }
+            Debug.Log("Ending the episode.");
+            
         }
         else
         {
-            playerScore -= 5;  // Penalty for incorrect answer
-            UpdateScoreText();
-            hintAgent.AddReward(-1.0f); // Penalize for wrong answer
-            hintAgent.EndEpisode(); // End the episode for the agent
+            // Penalize for incorrect answer
+           // playerScore -= 5;
+           // UpdateScoreText();
+
+            // Penalize the agent for wrong answer
+            hintAgent.AddReward(-0.1f);
+            hintAgent.EndEpisode();  // End the episode
             Debug.Log("Incorrect answer.");
         }
     }
 
+
     // Update the player's score on the UI
-    void UpdateScoreText()
+    public void UpdateScoreText()
     {
         scoreText.text =playerScore.ToString();
+        //Debug.LogError(playerScore);
     }
 
     public QuestionModel GetCurrentQuestion()
@@ -312,19 +370,64 @@ public class FetchQuestions : MonoBehaviour
             return string.Empty;  // Return an empty string in case of an error
         }
     }
-
     public string GetAnswerByIndex(int answerIndex)
     {
-        if (currentQuestionIndex < questions.Count && answerIndex < questions[currentQuestionIndex].Answers.Length)
+        if (currentQuestionIndex < questions.Count)
         {
-            return questions[currentQuestionIndex].Answers[answerIndex];  // Returns the selected answer
+            // Gather the answer options into an array
+            string[] answerOptions = new string[]
+            {
+            questions[currentQuestionIndex].AnswerOption1,
+            questions[currentQuestionIndex].AnswerOption2,
+            questions[currentQuestionIndex].AnswerOption3,
+            questions[currentQuestionIndex].AnswerOption4
+            };
+
+            if (answerIndex < answerOptions.Length)
+            {
+                return answerOptions[answerIndex];  // Return the selected answer based on the index
+            }
+            else
+            {
+                Debug.LogError("Invalid answer index selected.");
+                return string.Empty;
+            }
         }
         else
         {
-            Debug.LogError("Invalid answer index selected.");
+            Debug.LogError("Question index is out of bounds.");
             return string.Empty;
         }
     }
+
+    public int GetCurrentQuestionId()
+    {
+        return questions[currentQuestionIndex].Id;
+    }
+
+    public string GetAnswerByAction(int action)
+    {
+        if (questions != null && currentQuestionIndex < questions.Count)
+        {
+            QuestionModel currentQuestion = questions[currentQuestionIndex];
+            switch (action)
+            {
+                case 0:
+                    return currentQuestion.AnswerOption1;
+                case 1:
+                    return currentQuestion.AnswerOption2;
+                case 2:
+                    return currentQuestion.AnswerOption3;
+                case 3:
+                    return currentQuestion.AnswerOption4;
+                default:
+                    Debug.LogError("Invalid action for answer selection");
+                    return null;
+            }
+        }
+        return null;
+    }
+
 
 }
 

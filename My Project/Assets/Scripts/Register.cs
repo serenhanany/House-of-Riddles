@@ -88,7 +88,7 @@ public class RegisterScript : MonoBehaviour
         else
         {
             Debug.Log("User registered successfully!");
-            SceneManager.LoadScene("Q1");
+            SceneManager.LoadScene("Login");
         }
         
 

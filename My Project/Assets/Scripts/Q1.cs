@@ -25,10 +25,10 @@ public class Q1 : MonoBehaviour
     }
     public void LoginScene()
     {
-        SceneManager.LoadScene("Login");
+        SceneManager.LoadScene("Buildings 2");
     }
     public void PracticeScene()
     {
-        SceneManager.LoadScene("Practice");
+        SceneManager.LoadScene("Buildings");
     }
 }
