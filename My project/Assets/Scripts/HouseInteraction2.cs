@@ -5,8 +5,8 @@ using TMPro;
 public class HouseInteraction2 : MonoBehaviour
 {
     public GameObject QuestionPanel2;  // Reference to the panel in the scene
-    public Button HintButton;          // Reference to the Hint button
-    public TextMeshProUGUI TextForHint;           // Reference to the Text component for hint
+   // public Button HintButton;          // Reference to the Hint button
+   // public TextMeshProUGUI TextForHint;           // Reference to the Text component for hint
 
     private bool isLocked = true;
 
@@ -17,7 +17,7 @@ public class HouseInteraction2 : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         // Check if TextForHint is assigned and hide it initially
-        if (TextForHint != null)
+       /* if (TextForHint != null)
         {
             TextForHint.gameObject.SetActive(false);
         }
@@ -34,7 +34,7 @@ public class HouseInteraction2 : MonoBehaviour
         else
         {
             Debug.LogError("HintButton is not assigned in the Inspector!");
-        }
+        }*/
     }
 
     private void OnMouseDown()
@@ -78,7 +78,7 @@ public class HouseInteraction2 : MonoBehaviour
     }
 
     // Show the hint text when the button is clicked
-    private void ShowHint()
+   /* private void ShowHint()
     {
         Debug.Log("Hint button clicked!");
         if (TextForHint != null)
@@ -89,5 +89,5 @@ public class HouseInteraction2 : MonoBehaviour
         {
             Debug.LogError("TextForHint is not assigned in the Inspector!");
         }
-    }
+    }*/
 }
