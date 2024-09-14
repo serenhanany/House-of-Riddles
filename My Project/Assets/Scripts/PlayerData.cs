@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 public class PlayerData : MonoBehaviour
@@ -40,5 +41,15 @@ public class PlayerData : MonoBehaviour
         CurrentQuestionAttempts = 0;
         HintGiven = false;
         TimeSpentOnCurrentQuestion = 0f;
+    }
+
+    public void ClearPlayerData()
+    {
+        playerId = 0;
+        playerName = string.Empty;
+        playerLevel = 0;
+        Score = 0;
+        ResetQuestionData();  // Reset question-related data as well
+        Debug.Log("Player data cleared.");
     }
 }

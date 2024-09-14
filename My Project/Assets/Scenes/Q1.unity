@@ -185,7 +185,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 12d04847b85b5eb4489e35ebc6abb48c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fb32a77394760d24a9497132827437be, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -841,7 +841,7 @@ GameObject:
   - component: {fileID: 431560775}
   - component: {fileID: 431560774}
   m_Layer: 5
-  m_Name: HomePage
+  m_Name: logout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -864,7 +864,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -344, y: -157}
+  m_AnchoredPosition: {x: -357, y: -162}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &431560774
@@ -1082,7 +1082,7 @@ GameObject:
   - component: {fileID: 1617948257}
   - component: {fileID: 1617948256}
   m_Layer: 5
-  m_Name: HomePageText
+  m_Name: LogOut
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1127,7 +1127,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Home Page
+  m_text: LogOut
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1418,6 +1418,7 @@ GameObject:
   - component: {fileID: 2064168059}
   - component: {fileID: 2064168058}
   - component: {fileID: 2064168061}
+  - component: {fileID: 2064168062}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1513,6 +1514,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   YesButton: {fileID: 900876937}
   NoButton: {fileID: 366166347}
+--- !u!114 &2064168062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064168057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12fc64aa8c838cf40905515814733855, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logoutButton: {fileID: 431560774}
 --- !u!1 &2065384542
 GameObject:
   m_ObjectHideFlags: 0

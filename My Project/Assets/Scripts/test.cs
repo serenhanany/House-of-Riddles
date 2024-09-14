@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 
 
+
 public class test : MonoBehaviour
 {
     //public TMP_Text playerLevelText;
@@ -42,6 +43,7 @@ public class test : MonoBehaviour
         if (hintButton != null)
         {
             hintButton.onClick.AddListener(() => StartCoroutine(GiveHint(currentQuestionIndex)));
+           
         }
         else
         {
@@ -109,7 +111,6 @@ public class test : MonoBehaviour
         DisplayNextUnansweredQuestion();
 
          }
-
     IEnumerator GiveHint(int hintLevel)
     {
         // Check if questions have been fetched and the current index is within bounds
@@ -127,19 +128,29 @@ public class test : MonoBehaviour
 
         QuestionModel currentQuestion = questions[currentQuestionIndex];
 
-        // Fetch the appropriate hint based on the hintLevel provided by the RL agent
-        HintModel selectedHint = currentQuestion.Hints.Find(h => h.HintLevel == hintLevel);
+        // Check if there are hints available for the current question
+        if (currentQuestion.Hints == null || currentQuestion.Hints.Count == 0)
+        {
+            Debug.LogError("No hints available for this question.");
+            yield break;
+        }
+
+        // Randomly select a hint from the available hints
+        int randomIndex = Random.Range(0, currentQuestion.Hints.Count);
+        HintModel selectedHint = currentQuestion.Hints[randomIndex];
+
         if (selectedHint != null)
         {
             hintText.text = selectedHint.HintText; // Display the hint in the UI
-            //hintAgent.AddReward(-0.01f); // Optional: Small penalty for using a hint
-           // hintAgent.EndEpisode(); // End the episode after hint is given
+                                                   // hintAgent.AddReward(-0.01f); // Optional: Small penalty for using a hint
+                                                   // hintAgent.EndEpisode(); // End the episode after hint is given
         }
         else
         {
-            Debug.LogError("No hints available for this question.");
+            Debug.LogError("Selected hint is null.");
         }
     }
+
 
 
     void DisplayNextUnansweredQuestion()
@@ -244,7 +255,8 @@ public class test : MonoBehaviour
         {
             if (scoreText != null)
             {
-                scoreText.text = playerScore.ToString();
+                scoreText.text = "Score: "+playerScore.ToString();
+                PlayerData.Instance.Score = playerScore;
             }
         }
 
