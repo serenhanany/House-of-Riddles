@@ -8,11 +8,6 @@ using Newtonsoft.Json;
 
 
 
-
-
-
-
-
 public class FetchQuestions : MonoBehaviour
 {
     public int maxAttemptsPerQuestion = 3;  
@@ -33,7 +28,7 @@ public class FetchQuestions : MonoBehaviour
     private string apiUrl = "https://localhost:7096/api/users";
     public int predefinedLevel = 1;
     public float questionStartTime;
-
+    public float maxAllowedTime = 30.0f;
     // Reference to the RL agent for hinting
     public HintAgent hintAgent;
 
@@ -160,7 +155,19 @@ public class FetchQuestions : MonoBehaviour
         if (selectedHint != null)
         {
             hintText.text = selectedHint.HintText; // Display the hint in the UI
-            hintAgent.AddReward(-0.01f); // Optional: Small penalty for using a hint
+            switch (hintLevel)
+            {
+                case 1: // Easy hint
+                    hintAgent.AddReward(-0.5f);
+                    break;
+                case 2: // Medium hint
+                    hintAgent.AddReward(-1.0f);
+                    break;
+                case 3: // Hard hint
+                    hintAgent.AddReward(-1.5f);
+                    break;
+            }
+
             hintAgent.EndEpisode(); // End the episode after hint is given
         }
         else
@@ -183,11 +190,11 @@ public class FetchQuestions : MonoBehaviour
             return;
         }
         //Debug.Log($"Initial currentQuestionIndex: {currentQuestionIndex}, Questions Count: {questions.Count}");
-
+/*
         if (!answeredQuestionIds.Contains(questions[currentQuestionIndex].Id))
         {
             answeredQuestionIds.Add(questions[currentQuestionIndex].Id);
-        }
+        }*/
         // Check the contents of answeredQuestionIds
         //Debug.Log("Answered Question IDs: " + string.Join(", ", answeredQuestionIds));
 
@@ -244,7 +251,7 @@ public class FetchQuestions : MonoBehaviour
         else
         {
             Debug.LogError("One or more buttons are missing a TMP_Text component.");
-        } /*
+        } 
         foreach (Button button in optionButtons)
         {
             button.onClick.RemoveAllListeners();
@@ -253,13 +260,13 @@ public class FetchQuestions : MonoBehaviour
         optionButtons[0].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption1, question.CorrectAnswer, question.Id));
         optionButtons[1].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption2, question.CorrectAnswer, question.Id));
         optionButtons[2].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption3, question.CorrectAnswer, question.Id));
-        optionButtons[3].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption4, question.CorrectAnswer, question.Id));*/
+        optionButtons[3].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption4, question.CorrectAnswer, question.Id));
     }
     public void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
     {
         float timeTaken = Time.time - questionStartTime;
         bool answeredCorrectly = selectedAnswer == correctAnswer;
-
+        float reward = 0.0f;
         if (answeredCorrectly)
         {
             playerScore += 10;
@@ -272,7 +279,8 @@ public class FetchQuestions : MonoBehaviour
             Debug.Log("Answered Question IDs: " + string.Join(", ", answeredQuestionIds));
 
             // Reward the agent based on time taken to answer
-            hintAgent.AddReward(1.0f / timeTaken);
+            reward = 1.0f - (timeTaken / maxAllowedTime);
+            hintAgent.AddReward(reward);
             hintAgent.EndEpisode();  // End the episode
 
             if (currentQuestionIndex < questions.Count - 1)
@@ -293,9 +301,8 @@ public class FetchQuestions : MonoBehaviour
         else
         {
             // Penalize for incorrect answer
-           // playerScore -= 5;
-           // UpdateScoreText();
-
+           playerScore -= 5;
+           UpdateScoreText();
             // Penalize the agent for wrong answer
             hintAgent.AddReward(-0.1f);
             hintAgent.EndEpisode();  // End the episode

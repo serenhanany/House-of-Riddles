@@ -1601,8 +1601,8 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 0300000004000000
-    VectorActionSize: 0300000004000000
+      BranchSizes: 03000000
+    VectorActionSize: 03000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -1751,6 +1751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03cf64e07f6acb54196b71aa0d1bbe7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxAttemptsPerQuestion: 3
   questionsLoaded: 0
   questionText: {fileID: 1950726949}
   optionButtons:
@@ -1761,8 +1762,10 @@ MonoBehaviour:
   hintButton: {fileID: 1882988122}
   hintText: {fileID: 1763644360}
   scoreText: {fileID: 249537657}
+  playerScore: 0
   predefinedLevel: 1
   questionStartTime: 0
+  maxAllowedTime: 30
   hintAgent: {fileID: 1554586464}
 --- !u!1 &1763644358
 GameObject:
