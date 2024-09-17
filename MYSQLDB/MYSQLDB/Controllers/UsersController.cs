@@ -220,4 +220,16 @@ public class UsersController : ControllerBase
 
         return Ok(new { Message = "User level updated successfully" });
     }
+    [HttpGet("getLevel")]
+    public async Task<IActionResult> GetLevel(int userId)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound(new { Message = "User not found" });
+        }
+
+        return Ok(new { Level = user.Level });
+    }
+
 }

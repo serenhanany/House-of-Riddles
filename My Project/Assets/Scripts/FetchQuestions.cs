@@ -8,8 +8,14 @@ using Newtonsoft.Json;
 
 
 
+
+
 public class FetchQuestions : MonoBehaviour
 {
+    private List<float> questionTimes = new List<float>();  // Track the time spent on each question
+    private int correctFirstAttemptCount = 0;  // Tracks the number of first-time correct answers
+    private int totalQuestionsAnswered = 0;    // Tracks the total number of questions answered
+   // public GameObject QuestionPanel2;
     public int maxAttemptsPerQuestion = 3;  
     public int AttemptsRemaining { get;  set; }  
     public bool questionsLoaded = false;
@@ -26,7 +32,7 @@ public class FetchQuestions : MonoBehaviour
     public QuestionModel currentQuestion { get; private set; }
     public HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/users";
-    public int predefinedLevel = 1;
+    public int predefinedLevel;
     public float questionStartTime;
     public float maxAllowedTime = 30.0f;
     // Reference to the RL agent for hinting
@@ -35,9 +41,17 @@ public class FetchQuestions : MonoBehaviour
     void Start()
     {
         // Fetch questions from the server or database based on the player's predefined level
-        StartCoroutine(FetchQuestionsFromDB(predefinedLevel));
+       
+        //predefinedLevel = PlayerData.Instance.playerLevel;
+        StartCoroutine(FetchQuestionsFromDB(1));
         AttemptsRemaining = maxAttemptsPerQuestion;
         // No need to use hintButton since the RL agent decides when to give a hint
+        /* if (hintButton != null)
+         {
+             hintButton.onClick.AddListener(OnHintButtonPressed);
+             hintButton.interactable = true; // Make the button clickable
+             Debug.Log("Hint button is now enabled for the player to press.");
+         }*/
         if (hintButton != null)
         {
             hintAgent.enabled = false;
@@ -46,7 +60,14 @@ public class FetchQuestions : MonoBehaviour
 
         UpdateScoreText();
     }
-
+    void OnHintButtonPressed()
+    {
+        if (hintAgent != null)
+        {
+            Debug.Log("Hint button pressed. Agent is making a decision.");
+            hintAgent.RequestDecision();  // Request the agent to make a decision
+        }
+    }
     public void ResetAttempts()
     {
         AttemptsRemaining = maxAttemptsPerQuestion;
@@ -266,9 +287,14 @@ public class FetchQuestions : MonoBehaviour
     {
         float timeTaken = Time.time - questionStartTime;
         bool answeredCorrectly = selectedAnswer == correctAnswer;
+        totalQuestionsAnswered++;
         float reward = 0.0f;
         if (answeredCorrectly)
         {
+            if (AttemptsRemaining == maxAttemptsPerQuestion)  // Check if it's the first attempt
+            {
+                correctFirstAttemptCount++;  // Increment the count of first-time correct answers
+            }
             playerScore += 10;
             UpdateScoreText();
 
@@ -287,7 +313,10 @@ public class FetchQuestions : MonoBehaviour
             {
                 currentQuestionIndex++;
                 Debug.Log("Moving to next question. Current question index: " + currentQuestionIndex);
+                hintText.text = "";
+                //QuestionPanel2.SetActive(false);
                 DisplayNextUnansweredQuestion();  // Display the next question
+
                // Debug.Log("Question transitioned, now ending the episode.");
             }
             else
@@ -296,6 +325,7 @@ public class FetchQuestions : MonoBehaviour
                 EndGame();  // Handle game end if all questions are answered
             }
             Debug.Log("Ending the episode.");
+          
             
         }
         else
@@ -310,11 +340,16 @@ public class FetchQuestions : MonoBehaviour
         }
     }
 
+    public float GetPlayerSuccessRate()
+    {
+        if (totalQuestionsAnswered == 0) return 0.0f;  // Avoid division by zero
+        return (float)correctFirstAttemptCount / totalQuestionsAnswered;
+    }
 
     // Update the player's score on the UI
     public void UpdateScoreText()
     {
-        scoreText.text =playerScore.ToString();
+        scoreText.text ="Score"+playerScore.ToString();
         //Debug.LogError(playerScore);
     }
 
@@ -435,6 +470,50 @@ public class FetchQuestions : MonoBehaviour
         return null;
     }
 
+
+   
+
+    public float GetAverageTimeSpent()
+    {
+        if (questionTimes.Count == 0)
+        {
+            return 0.0f;  // If no questions have been answered, return 0
+        }
+
+        float totalTime = 0.0f;
+        foreach (float time in questionTimes)
+        {
+            totalTime += time;
+        }
+
+        return totalTime / questionTimes.Count;
+    }
+    public int GetAttemptsUsed()
+    {
+        return maxAttemptsPerQuestion - AttemptsRemaining;
+    }
+
+    public int GetRemainingQuestionsCount()
+    {
+        if (questions == null || answeredQuestionIds == null)
+        {
+            Debug.LogWarning("Questions or answeredQuestionIds not initialized.");
+            return 0;  // Return 0 or an appropriate default value
+        }
+
+        return questions.Count - answeredQuestionIds.Count;
+    }
+
+    public float GetTotalTimeSpent()
+    {
+        float totalTime = 0.0f;
+        foreach (float time in questionTimes)
+        {
+            totalTime += time;
+        }
+
+        return totalTime;
+    }
 
 }
 

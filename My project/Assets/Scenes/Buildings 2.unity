@@ -1960,6 +1960,88 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8837424777151439586, guid: 39e18f2f84adafd4498f7ee3c62d46db, type: 3}
   m_PrefabInstance: {fileID: 767929951}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &816629466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 816629469}
+  - component: {fileID: 816629468}
+  - component: {fileID: 816629467}
+  m_Layer: 0
+  m_Name: HintAgent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &816629467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816629466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e633d7c555f886c489cc987245a75342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
+  hintText: {fileID: 1728057978}
+  fetchQuestions: {fileID: 1434025305}
+  playerScore: 0
+--- !u!114 &816629468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816629466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    VectorObservationSize: 1
+    NumStackedVectorObservations: 1
+    m_ActionSpec:
+      m_NumContinuousActions: 0
+      BranchSizes: 03000000
+    VectorActionSize: 03000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 0
+    hasUpgradedBrainParametersWithActionSpec: 1
+  m_Model: {fileID: 5022602860645237092, guid: 8536a52d84ef9f74aa436bc0c8703899, type: 3}
+  m_InferenceDevice: 0
+  m_BehaviorType: 2
+  m_BehaviorName: My Behavior
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_UseChildActuators: 1
+  m_ObservableAttributeHandling: 0
+--- !u!4 &816629469
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816629466}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 550.45996, y: 246.67928, z: 1.805234}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &888839697
 GameObject:
   m_ObjectHideFlags: 0
@@ -3201,8 +3283,8 @@ GameObject:
   - component: {fileID: 1434025301}
   - component: {fileID: 1434025300}
   - component: {fileID: 1434025302}
-  - component: {fileID: 1434025303}
   - component: {fileID: 1434025304}
+  - component: {fileID: 1434025305}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -3308,30 +3390,6 @@ MonoBehaviour:
   seconds: 0
   minutes1: 0
   seconds1: 0
---- !u!114 &1434025303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1434025299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afeffbe05bdee144280b98959797bb3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  questionsLoaded: 0
-  questionText: {fileID: 1628179765}
-  InCorrect: {fileID: 1257209952}
-  optionButtons:
-  - {fileID: 2101454968}
-  - {fileID: 1742467743}
-  - {fileID: 560323000}
-  - {fileID: 627446976}
-  hintButton: {fileID: 1959376537}
-  hintText: {fileID: 1728057978}
-  scoreText: {fileID: 1634433988}
-  QuestionPanel2: {fileID: 1509639317}
 --- !u!114 &1434025304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3345,6 +3403,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logoutButton: {fileID: 1831582998}
+--- !u!114 &1434025305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1434025299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03cf64e07f6acb54196b71aa0d1bbe7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  QuestionPanel2: {fileID: 1509639317}
+  maxAttemptsPerQuestion: 3
+  questionsLoaded: 0
+  questionText: {fileID: 1628179765}
+  optionButtons:
+  - {fileID: 2101454968}
+  - {fileID: 1742467743}
+  - {fileID: 560323000}
+  - {fileID: 627446976}
+  hintButton: {fileID: 1959376537}
+  hintText: {fileID: 1728057978}
+  scoreText: {fileID: 1634433988}
+  playerScore: 0
+  predefinedLevel: 1
+  questionStartTime: 0
+  maxAllowedTime: 30
+  hintAgent: {fileID: 816629467}
 --- !u!1001 &1439611101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3621,7 +3708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1509639318
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6028,3 +6115,4 @@ SceneRoots:
   - {fileID: 402370326}
   - {fileID: 758153933}
   - {fileID: 1551415879}
+  - {fileID: 816629469}

@@ -14,8 +14,10 @@ pip install --upgrade mlagents-envs
 mlagents-learn --version
 mlagents-learn --force
 mlagents-learn --no-graphics --force
-mlagents-learn --no-graphics --run-id=hint --force
-mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=my_first_run --no-graphics --force
+mlagents-learn --no-graphics --run-id=hint 
+
+new_venv\Scripts\activate
+mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=2 --no-graphics --force
 
 
 pip install tensorboard

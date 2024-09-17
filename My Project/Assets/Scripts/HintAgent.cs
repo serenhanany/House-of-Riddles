@@ -8,6 +8,7 @@ using TMPro;
 
 
 
+
 public class HintAgent : Agent
 {
     public TMP_Text hintText;
@@ -90,6 +91,22 @@ public class HintAgent : Agent
         {
             sensor.AddObservation(0.0f);  // Default value if no question is available
         }
+        sensor.AddObservation(fetchQuestions.GetPlayerSuccessRate());
+        //sensor.AddObservation(PlayerData.Instance.playerLevel / 10.0f);  // Assuming max level is 10 for normalization
+
+      
+
+        // 3. Average time spent on previous questions
+        sensor.AddObservation(fetchQuestions.GetAverageTimeSpent());
+
+        // 4. Attempts used for the current question
+        sensor.AddObservation(fetchQuestions.GetAttemptsUsed());
+
+        // 5. Remaining questions count
+        sensor.AddObservation(fetchQuestions.GetRemainingQuestionsCount());
+
+        // 6. Cumulative time spent on all questions
+        sensor.AddObservation(fetchQuestions.GetTotalTimeSpent());
     }
     
     
@@ -183,30 +200,77 @@ public class HintAgent : Agent
 
         int hintAction = actions.DiscreteActions[0];  // The agent selects a hint level
     
-        float baseReward = 5.0f;  // Start with a high reward for no hints
+        float baseReward = 0.0f;  // Start with a high reward for no hints
 
         // Action 0 = Easy hint, Action 1 = Medium hint, Action 2 = Hard hint
         switch (hintAction)
         {
             case 0:
                 fetchQuestions.GiveHint(1);  // Easy hint (level 1)
-                baseReward -= 0.5f * (1 + (fetchQuestions.playerScore / 100.0f));
+                baseReward -= 0.2f * (1 + (fetchQuestions.playerScore / 100.0f));
                 Debug.Log("Easy hint given.");
                 break;
             case 1:
                 fetchQuestions.GiveHint(2);  // Medium hint (level 2)
-                baseReward -= 1.0f * (1 + (fetchQuestions.playerScore / 100.0f));
+                baseReward -= 0.5f * (1 + (fetchQuestions.playerScore / 100.0f));
                 Debug.Log("Medium hint given.");
                 break;
             case 2:
                 fetchQuestions.GiveHint(3);  // Hard hint (level 3)
-                baseReward -= 1.5f * (1 + (fetchQuestions.playerScore / 100.0f));
+                baseReward -= 1.0f * (1 + (fetchQuestions.playerScore / 100.0f));
                 Debug.Log("Hard hint given.");
+                break;
+            default:
                 break;
         }
 
-      
+        // Check if the answer is correct
+        bool answeredCorrectly = fetchQuestions.CheckIfAnswerCorrect(fetchQuestions.GetSelectedAnswer());
 
+        // If answered correctly, apply positive reward
+        if (answeredCorrectly)
+        {
+            // Apply a higher reward if no hints were used
+            if (hintAction == 0) // No hint used
+            {
+                baseReward += 2.0f;  // Higher reward for answering without any hint
+            }
+
+            // Reward based on time taken to answer
+            float timeTaken = Time.time - fetchQuestions.questionStartTime;
+            float timePenalty = Mathf.Clamp(1.0f / timeTaken, 0.1f, 1.0f);  // Adjust reward based on time taken
+
+            // Apply the reward
+            AddReward(baseReward * timePenalty);
+            Debug.Log($"Correct answer! Base reward: {baseReward}, Time penalty applied: {timePenalty}");
+
+            // Move to the next question
+            fetchQuestions.playerScore += 10;
+            fetchQuestions.UpdateScoreText();
+            fetchQuestions.DisplayNextUnansweredQuestion();
+        }
+        else
+        {
+            // Penalty for incorrect answer
+            AddReward(-0.5f);
+            Debug.Log("Incorrect answer. Penalty applied.");
+
+            // Retry logic (if retries are allowed)
+            if (fetchQuestions.AttemptsRemaining > 0)
+            {
+                fetchQuestions.AttemptsRemaining--;
+                Debug.Log($"Attempts remaining: {fetchQuestions.AttemptsRemaining}. Allowing another try.");
+            }
+            else
+            {
+                // No retries left, end the episode
+                fetchQuestions.DisplayNextUnansweredQuestion();
+                float timeSpent = Time.time - fetchQuestions.questionStartTime;
+                AddReward(-timeSpent * 0.01f);
+                EndEpisode();
+            }
+        }
+        /*
         float timeTaken = Time.time - fetchQuestions.questionStartTime;
         float timePenalty = Mathf.Clamp(1.0f / timeTaken, 0.1f, 1.0f);  // Adjust reward based on time taken
        
@@ -216,8 +280,8 @@ public class HintAgent : Agent
       
             fetchQuestions.DisplayNextUnansweredQuestion();
       
-                EndEpisode();
-           
+                EndEpisode();*/
+
     }
 
     // Function to provide hints based on hint level (easy = 1, medium = 2, hard = 3)

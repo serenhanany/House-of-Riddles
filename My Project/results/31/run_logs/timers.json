@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1726581468",
+        "python_version": "3.9.12 (tags/v3.9.12:b28265d, Mar 23 2022, 23:52:46) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\Seren\\Desktop\\House-of-Riddles\\My Project\\new_venv\\Scripts\\mlagents-learn Assets/MLAgents/Configs/trainer_config.yaml --run-id=31 --no-graphics",
+        "mlagents_version": "0.30.0",
+        "mlagents_envs_version": "0.30.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.4.0+cpu",
+        "numpy_version": "1.21.2",
+        "end_time_seconds": "1726581562"
+    },
+    "total": 93.93789269999999,
+    "count": 1,
+    "self": 0.025826099999989083,
+    "children": {
+        "run_training.setup": {
+            "total": 0.15984629999999989,
+            "count": 1,
+            "self": 0.15984629999999989
+        },
+        "TrainerController.start_learning": {
+            "total": 93.7522203,
+            "count": 1,
+            "self": 0.001104700000027492,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 93.75030369999999,
+                    "count": 1,
+                    "self": 93.75030369999999
+                },
+                "TrainerController._save_models": {
+                    "total": 0.0008118999999879861,
+                    "count": 1,
+                    "self": 0.0008118999999879861
+                }
+            }
+        }
+    }
+}
