@@ -428,8 +428,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 100.09717, y: -84.5}
-  m_SizeDelta: {x: 553.8057, y: 139}
+  m_AnchoredPosition: {x: 107.31, y: -84.5}
+  m_SizeDelta: {x: 539.38, y: 139}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &47986369
 MonoBehaviour:
@@ -444,6 +444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!114 &47986370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,8 +578,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -267, y: -84}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: -249.76999, y: -83.5078}
+  m_SizeDelta: {x: 194.45, y: 29.0155}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &48391152
 MonoBehaviour:
@@ -715,6 +716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1 &158593873
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,6 +904,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1 &230943711 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6861277608493065982, guid: a9ab34eb1b89fbf4ca269b4bc3eadfac, type: 3}
@@ -955,6 +958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1001 &295712849
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1101,8 +1105,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1299,8 +1303,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1464,6 +1468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1001 &402370326
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1627,8 +1632,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -267, y: -120}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: -249.76999, y: -120.984474}
+  m_SizeDelta: {x: 194.45, y: 31.9689}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &436701430
 MonoBehaviour:
@@ -2135,6 +2140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1 &526736428
 GameObject:
   m_ObjectHideFlags: 0
@@ -2324,6 +2330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1001 &658486275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2571,6 +2578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1 &708088847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2678,6 +2686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!222 &708088851
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2958,14 +2967,14 @@ MonoBehaviour:
   m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190335
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2982,8 +2991,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3068,8 +3077,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -266, y: -47}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: -249.27, y: -46.5078}
+  m_SizeDelta: {x: 193.45, y: 29.0155}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &874283271
 MonoBehaviour:
@@ -4365,8 +4374,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4751,6 +4760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1 &1514668190
 GameObject:
   m_ObjectHideFlags: 0
@@ -4896,8 +4906,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -267, y: -9}
-  m_SizeDelta: {x: 160, y: 27.7642}
+  m_AnchoredPosition: {x: -249.7717, y: -11.0124}
+  m_SizeDelta: {x: 194.4566, y: 31.7888}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1586248861
 MonoBehaviour:
@@ -5806,6 +5816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1001 &1978889784
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5952,8 +5963,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6196,6 +6207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QuestionPanel2: {fileID: 1269556294}
+  CountOfHousesText: {fileID: 0}
 --- !u!1001 &2131025922
 PrefabInstance:
   m_ObjectHideFlags: 0

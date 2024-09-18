@@ -15,7 +15,7 @@ public class FetchQuestions : MonoBehaviour
     private List<float> questionTimes = new List<float>();  // Track the time spent on each question
     private int correctFirstAttemptCount = 0;  // Tracks the number of first-time correct answers
     private int totalQuestionsAnswered = 0;    // Tracks the total number of questions answered
-   // public GameObject QuestionPanel2;
+    public GameObject QuestionPanel2;
     public int maxAttemptsPerQuestion = 3;  
     public int AttemptsRemaining { get;  set; }  
     public bool questionsLoaded = false;
@@ -24,8 +24,10 @@ public class FetchQuestions : MonoBehaviour
     public Button[] optionButtons;
     public Button hintButton;
     public TMP_Text hintText;
+    public TMP_Text CountOfHousesText;
     public TMP_Text scoreText;
     public int playerScore = 0;
+    public int CountOfHouses = 0;
     private int currentQuestionIndex = 0;
     private List<QuestionModel> questions;
     public List<QuestionModel> Questions { get { return questions; } }
@@ -35,29 +37,21 @@ public class FetchQuestions : MonoBehaviour
     public int predefinedLevel;
     public float questionStartTime;
     public float maxAllowedTime = 30.0f;
-    // Reference to the RL agent for hinting
     public HintAgent hintAgent;
-
+    public TMP_Text Errormsg;
     void Start()
     {
         // Fetch questions from the server or database based on the player's predefined level
-       
-        //predefinedLevel = PlayerData.Instance.playerLevel;
-        StartCoroutine(FetchQuestionsFromDB(1));
+        predefinedLevel = PlayerData.Instance.playerLevel;
+        StartCoroutine(FetchQuestionsFromDB(predefinedLevel));
         AttemptsRemaining = maxAttemptsPerQuestion;
         // No need to use hintButton since the RL agent decides when to give a hint
-        /* if (hintButton != null)
+        if (hintButton != null)
          {
              hintButton.onClick.AddListener(OnHintButtonPressed);
              hintButton.interactable = true; // Make the button clickable
              Debug.Log("Hint button is now enabled for the player to press.");
-         }*/
-        if (hintButton != null)
-        {
-            hintAgent.enabled = false;
-            Debug.Log("Hint button is currently disabled as the RL agent controls hint-giving.");
-        }
-
+         }
         UpdateScoreText();
     }
     void OnHintButtonPressed()
@@ -203,8 +197,8 @@ public class FetchQuestions : MonoBehaviour
     // Display the next unanswered question
     public void DisplayNextUnansweredQuestion()
     {
-       // hintText.text = "";
-
+        hintText.text = "";
+        
         if (questions == null || questions.Count == 0)
         {
             Debug.LogError("No questions available.");
@@ -248,6 +242,7 @@ public class FetchQuestions : MonoBehaviour
     // Display a specific question
     void DisplayQuestion(QuestionModel question)
     {
+        Errormsg.text = "";
         if (question == null)
         {
             Debug.LogError("Attempted to display a null question.");
@@ -285,6 +280,7 @@ public class FetchQuestions : MonoBehaviour
     }
     public void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
     {
+        Errormsg.text = "";
         float timeTaken = Time.time - questionStartTime;
         bool answeredCorrectly = selectedAnswer == correctAnswer;
         totalQuestionsAnswered++;
@@ -314,9 +310,10 @@ public class FetchQuestions : MonoBehaviour
                 currentQuestionIndex++;
                 Debug.Log("Moving to next question. Current question index: " + currentQuestionIndex);
                 hintText.text = "";
-                //QuestionPanel2.SetActive(false);
+                CountOfHouses++;
+                CountOfHousesText.text = "Well done! You've won a house! Keep going to conquer even more!\n" + "Number of your houses: " + CountOfHouses;
+                QuestionPanel2.SetActive(false);
                 DisplayNextUnansweredQuestion();  // Display the next question
-
                // Debug.Log("Question transitioned, now ending the episode.");
             }
             else
@@ -333,6 +330,7 @@ public class FetchQuestions : MonoBehaviour
             // Penalize for incorrect answer
            playerScore -= 5;
            UpdateScoreText();
+            Errormsg.text = "Incorrect answer!";
             // Penalize the agent for wrong answer
             hintAgent.AddReward(-0.1f);
             hintAgent.EndEpisode();  // End the episode
@@ -349,8 +347,8 @@ public class FetchQuestions : MonoBehaviour
     // Update the player's score on the UI
     public void UpdateScoreText()
     {
-        scoreText.text ="Score"+playerScore.ToString();
-        //Debug.LogError(playerScore);
+        scoreText.text ="Score:"+playerScore.ToString();
+        PlayerData.Instance.Score = playerScore;
     }
 
     public QuestionModel GetCurrentQuestion()

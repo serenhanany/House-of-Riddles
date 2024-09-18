@@ -5,8 +5,6 @@ using System.Text;
 using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.SceneManagement;
-using Mirror;
-using static System.Net.WebRequestMethods;
 
 
 public class RegisterScript : MonoBehaviour
@@ -15,57 +13,53 @@ public class RegisterScript : MonoBehaviour
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
     public TMP_InputField emailField;
-    public TMP_InputField ageField;
-    public TMP_InputField studyField;
     public Button registerButton;
     public TMP_Text messageText;
     public Button HomePageButton;
 
     void Start()
     {
+        // Check if all fields are assigned
+        if (fullnameField == null || usernameField == null || passwordField == null || emailField == null || registerButton == null || messageText == null)
+        {
+            Debug.Log("One or more fields are not assigned in the Inspector.");
+            return;
+        }
+
         registerButton.onClick.AddListener(() => StartCoroutine(RegisterUser()));
+
         if (HomePageButton != null)
         {
             HomePageButton.onClick.AddListener(HomePageScene);
         }
     }
+
     public void HomePageScene()
     {
         SceneManager.LoadScene("HomePage");
     }
+
     IEnumerator RegisterUser()
     {
-        //string url = "http://localhost:5093";
         string url = "https://localhost:7096/api/users/register";
         Debug.Log("Connecting to URL: " + url);
 
-        string username = usernameField.text;
-        string password = passwordField.text;
-        string age = ageField.text;
-        string study = studyField.text;
-        string fullname = fullnameField.text;
-        string email = emailField.text;
-       
-
         // Check if any field is empty
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullname) || string.IsNullOrEmpty(age) || string.IsNullOrEmpty(study))
+        if (string.IsNullOrEmpty(usernameField.text) || string.IsNullOrEmpty(passwordField.text) || string.IsNullOrEmpty(fullnameField.text) || string.IsNullOrEmpty(emailField.text))
         {
             // Show error message
             messageText.text = "Please fill in all fields.";
             yield break; // Exit coroutine
         }
 
-        // Convert age string to integer
-        int age1;
-        if (!int.TryParse(age, out age1))
-        {
-            // Show error message if age is not a valid integer
-            messageText.text = "Please enter a valid age.";
-            yield break; // Exit coroutine
-        }
+        // Collect data from input fields
+        string username = usernameField.text;
+        string password = passwordField.text;
+        string fullname = fullnameField.text;
+        string email = emailField.text;
 
         // Create the user object
-        UserModel user = new UserModel { Username = username, Password = password, Fullname=fullname,Age=age,Study=study,Email=email };
+        UserModel user = new UserModel { Username = username, Password = password, Fullname = fullname, Email = email };
 
         // Convert the user object to JSON
         string json = JsonUtility.ToJson(user);
@@ -84,14 +78,13 @@ public class RegisterScript : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error: " + request.error);
+            messageText.text = "Registration failed. Please try again.";
         }
         else
         {
             Debug.Log("User registered successfully!");
             SceneManager.LoadScene("Login");
         }
-        
-
     }
 }
 
@@ -101,7 +94,5 @@ public class UserModel
     public string Username;
     public string Password;
     public string Fullname;
-    public string Age;
-    public string Study;
     public string Email;
 }

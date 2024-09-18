@@ -8,8 +8,6 @@ namespace MYSQLDB
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Fullname { get; set; } = string.Empty;
-        public int Age { get; set; }
-        public string Study { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public int Level { get; set; } = 1;  // Default level, if applicable
     }
