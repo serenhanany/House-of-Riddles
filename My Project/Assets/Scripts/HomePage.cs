@@ -15,6 +15,7 @@ public class HomePage : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Add event listeners to buttons if they are not null
         if (PlayButton != null)
         {
             PlayButton.onClick.AddListener(LoginScene);
@@ -38,12 +39,12 @@ public class HomePage : MonoBehaviour
             helpText.gameObject.SetActive(false);
         }
     }
-
+    // Loads the login scene
     public void LoginScene()
     {
         SceneManager.LoadScene("Login");
     }
-
+    // Loads the practice scene
     public void PracticeScene()
     {
         SceneManager.LoadScene("Practice");
@@ -58,7 +59,7 @@ public class HomePage : MonoBehaviour
             helpText.gameObject.SetActive(isHelpTextVisible);
         }
     }
-
+    // Loads the create account (registration) scene
     public void createAccountScene()
     {
         SceneManager.LoadScene("Register");

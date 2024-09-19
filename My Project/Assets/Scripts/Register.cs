@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class RegisterScript : MonoBehaviour
 {
+    // Public fields for input fields and buttons
     public TMP_InputField fullnameField;
     public TMP_InputField usernameField;
     public TMP_InputField passwordField;
@@ -19,26 +20,26 @@ public class RegisterScript : MonoBehaviour
 
     void Start()
     {
-        // Check if all fields are assigned
+        // Check if all fields are assigned in the Inspector
         if (fullnameField == null || usernameField == null || passwordField == null || emailField == null || registerButton == null || messageText == null)
         {
             Debug.Log("One or more fields are not assigned in the Inspector.");
             return;
         }
-
+        // Add listener to registerButton to start the registration process
         registerButton.onClick.AddListener(() => StartCoroutine(RegisterUser()));
-
+        // Add listener to HomePageButton to navigate to the home page if it's assigned
         if (HomePageButton != null)
         {
             HomePageButton.onClick.AddListener(HomePageScene);
         }
     }
-
+    // Method to navigate to the home page scene
     public void HomePageScene()
     {
         SceneManager.LoadScene("HomePage");
     }
-
+    // Coroutine to handle user registration
     IEnumerator RegisterUser()
     {
         string url = "https://localhost:7096/api/users/register";

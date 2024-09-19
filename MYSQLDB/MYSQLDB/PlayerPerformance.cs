@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MYSQLDB
 {
+    /*This table will help the RL agent to give a hint base on player performance*/
     [Table("player_performance")]
     public class PlayerPerformance
     {
         [Key]
         [Column("performance_id")]
-        public int Id { get; set; }  // Map to the 'performance_id' in the database
+        public int Id { get; set; }  
 
         [Column("user_id")]
         public int UserId { get; set; }

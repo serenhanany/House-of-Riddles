@@ -92,104 +92,22 @@ public class HintAgent : Agent
             sensor.AddObservation(0.0f);  // Default value if no question is available
         }
         sensor.AddObservation(fetchQuestions.GetPlayerSuccessRate());
-        //sensor.AddObservation(PlayerData.Instance.playerLevel / 10.0f);  // Assuming max level is 10 for normalization
-
-      
-
-        // 3. Average time spent on previous questions
+  
+        // Average time spent on previous questions
         sensor.AddObservation(fetchQuestions.GetAverageTimeSpent());
 
-        // 4. Attempts used for the current question
+        // Attempts used for the current question
         sensor.AddObservation(fetchQuestions.GetAttemptsUsed());
 
-        // 5. Remaining questions count
+        // Remaining questions count
         sensor.AddObservation(fetchQuestions.GetRemainingQuestionsCount());
 
-        // 6. Cumulative time spent on all questions
+        // Cumulative time spent on all questions
         sensor.AddObservation(fetchQuestions.GetTotalTimeSpent());
     }
     
     
     private int attemptsRemaining = 4;  // Number of attempts allowed per question
-
-    /*public override void OnActionReceived(ActionBuffers actions)
-    {
-        if (!fetchQuestions.questionsLoaded)
-        {
-            Debug.LogError("Questions are not loaded yet. Cannot give a hint.");
-            return;
-        }
-
-        int hintAction = actions.DiscreteActions[0];  // The agent selects a hint level
-        int answerAction = actions.DiscreteActions[1];  // The agent selects an answer
-
-        float baseReward = 3.0f;  // Start with a high reward for no hints
-
-        // Action 0 = Easy hint, Action 1 = Medium hint, Action 2 = Hard hint
-        switch (hintAction)
-        {
-            case 0:
-                fetchQuestions.GiveHint(1);  // Easy hint (level 1)
-                baseReward -= 0.5f;  // Small deduction for an easy hint
-                Debug.Log("Easy hint given.");
-                break;
-            case 1:
-                fetchQuestions.GiveHint(2);  // Medium hint (level 2)
-                baseReward -= 1.0f;  // Medium deduction for a medium hint
-                Debug.Log("Medium hint given.");
-                break;
-            case 2:
-                fetchQuestions.GiveHint(3);  // Hard hint (level 3)
-                baseReward -= 1.5f;  // Largest deduction for a hard hint
-                Debug.Log("Hard hint given.");
-                break;
-        }
-
-        // Agent selects the answer (answerAction maps to one of the answer options)
-        string selectedAnswer = fetchQuestions.GetAnswerByAction(answerAction);
-
-        // Check if the selected answer is correct
-        bool answeredCorrectly = fetchQuestions.CheckIfAnswerCorrect(selectedAnswer);
-
-        float timeTaken = Time.time - fetchQuestions.questionStartTime;
-        float timePenalty = Mathf.Clamp(1.0f / timeTaken, 0.1f, 1.0f);  // Adjust reward based on time taken
-        string correctAnswer = fetchQuestions.GetCorrectAnswer();
-        Debug.Log($"Selected Answer: {selectedAnswer}, Correct Answer: {correctAnswer}");
-
-        if (answeredCorrectly)
-        {
-            // Reward based on hint level and time taken
-            AddReward(baseReward * timePenalty);
-            Debug.Log($"Correct answer! Base reward: {baseReward}, Time penalty applied: {timePenalty}");
-
-            // Reset attempts and move to the next question
-            fetchQuestions.ResetAttempts();
-            fetchQuestions.DisplayNextUnansweredQuestion();
-            questionStartTime = Time.time;  // Reset the question start time for the next question
-        }
-        else
-        {
-            // Penalty for incorrect answer
-            AddReward(-1.5f);
-            Debug.Log("Incorrect answer. Penalty applied.");
-
-            // Allow another try if attempts are left
-            if (fetchQuestions.AttemptsRemaining > 0)
-            {
-                fetchQuestions.AttemptsRemaining--;
-                Debug.Log($"Attempts remaining: {fetchQuestions.AttemptsRemaining}. Allowing another try.");
-            }
-            else
-            {
-                // If no attempts remain, reset attempts and move to the next question
-                fetchQuestions.ResetAttempts();
-                fetchQuestions.DisplayNextUnansweredQuestion();
-                questionStartTime = Time.time;  // Reset the question start time for the next question
-            }
-        }
-
-        EndEpisode();  // End the episode after the answer
-    }*/
     public override void OnActionReceived(ActionBuffers actions)
     {
         if (!fetchQuestions.questionsLoaded)
@@ -270,18 +188,6 @@ public class HintAgent : Agent
                 EndEpisode();
             }
         }
-        /*
-        float timeTaken = Time.time - fetchQuestions.questionStartTime;
-        float timePenalty = Mathf.Clamp(1.0f / timeTaken, 0.1f, 1.0f);  // Adjust reward based on time taken
-       
-            AddReward(baseReward * timePenalty);
-            Debug.Log($"Correct answer! Base reward: {baseReward}, Time penalty applied: {timePenalty}");
-
-      
-            fetchQuestions.DisplayNextUnansweredQuestion();
-      
-                EndEpisode();*/
-
     }
 
     // Function to provide hints based on hint level (easy = 1, medium = 2, hard = 3)

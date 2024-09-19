@@ -5,14 +5,14 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
     });
 
-// Add Swagger for API documentation
+//Swagger for API documentation
 builder.Services.AddSwaggerGen();
 
 // Add DbContext using MySQL

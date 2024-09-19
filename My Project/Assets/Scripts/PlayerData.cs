@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class PlayerData : MonoBehaviour
 {
+    // Singleton instance to allow global access to player data
     public static PlayerData Instance { get; private set; }
-
+    // Properties to hold player information
     public int playerId { get; private set; }
     public string playerName { get; private set; }
     public int playerLevel { get; private set; }
@@ -14,7 +15,7 @@ public class PlayerData : MonoBehaviour
     public int CurrentQuestionAttempts { get; set; }
     public bool HintGiven { get; set; }
     public float TimeSpentOnCurrentQuestion { get; set; }
-
+    // Awake is called when the script instance is being loaded
     private void Awake()
     {
         if (Instance == null)
@@ -27,7 +28,7 @@ public class PlayerData : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    // Method to set player data
     public void SetPlayerData(int id, string name, int level)
     {
         playerId = id;
@@ -35,14 +36,14 @@ public class PlayerData : MonoBehaviour
         playerLevel = level;
         ResetQuestionData();  // Initialize or reset question-related data
     }
-
+    // Method to reset question-related data
     public void ResetQuestionData()
     {
         CurrentQuestionAttempts = 0;
         HintGiven = false;
         TimeSpentOnCurrentQuestion = 0f;
     }
-
+    // Method to clear all player data
     public void ClearPlayerData()
     {
         playerId = 0;

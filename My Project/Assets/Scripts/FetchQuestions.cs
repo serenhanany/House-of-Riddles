@@ -45,30 +45,35 @@ public class FetchQuestions : MonoBehaviour
         predefinedLevel = PlayerData.Instance.playerLevel;
         StartCoroutine(FetchQuestionsFromDB(predefinedLevel));
         AttemptsRemaining = maxAttemptsPerQuestion;
-        // No need to use hintButton since the RL agent decides when to give a hint
+        // useing hintButton and the RL agent decides which hint to give base on player performance
         if (hintButton != null)
          {
              hintButton.onClick.AddListener(OnHintButtonPressed);
              hintButton.interactable = true; // Make the button clickable
-             Debug.Log("Hint button is now enabled for the player to press.");
          }
         UpdateScoreText();
     }
+  
     void OnHintButtonPressed()
     {
+        // Checks if the 'hintAgent' is not null (i.e., the agent is available)
         if (hintAgent != null)
         {
             Debug.Log("Hint button pressed. Agent is making a decision.");
             hintAgent.RequestDecision();  // Request the agent to make a decision
         }
     }
+
     public void ResetAttempts()
     {
+        // Resets the number of attempts remaining to the maximum allowed attempts per question
         AttemptsRemaining = maxAttemptsPerQuestion;
     }
 
     public bool MoveToNextUnansweredQuestion()
     {
+        // Checks if the current question index is less than the total number of questions minus one
+        // This ensures there are more questions to move to
         if (currentQuestionIndex < questions.Count - 1)
         {
             currentQuestionIndex++;
@@ -204,14 +209,6 @@ public class FetchQuestions : MonoBehaviour
             Debug.LogError("No questions available.");
             return;
         }
-        //Debug.Log($"Initial currentQuestionIndex: {currentQuestionIndex}, Questions Count: {questions.Count}");
-/*
-        if (!answeredQuestionIds.Contains(questions[currentQuestionIndex].Id))
-        {
-            answeredQuestionIds.Add(questions[currentQuestionIndex].Id);
-        }*/
-        // Check the contents of answeredQuestionIds
-        //Debug.Log("Answered Question IDs: " + string.Join(", ", answeredQuestionIds));
 
         // Check if the current question is in answeredQuestionIds
         if (currentQuestionIndex < questions.Count)
@@ -243,6 +240,7 @@ public class FetchQuestions : MonoBehaviour
     void DisplayQuestion(QuestionModel question)
     {
         Errormsg.text = "";
+        // Check if the question is null
         if (question == null)
         {
             Debug.LogError("Attempted to display a null question.");
@@ -250,15 +248,17 @@ public class FetchQuestions : MonoBehaviour
         }
 
         Debug.Log("Displaying question index: " + currentQuestionIndex + ", Question ID: " + question.Id);
-      
+        // Start the question timer for the hint agent
         hintAgent.StartQuestionTimer();
 
         questionText.text = question.QuestionText;
+        // Check if all option buttons have a TMP_Text component to display the answer options
         if (optionButtons[0].GetComponentInChildren<TMP_Text>() != null &&
         optionButtons[1].GetComponentInChildren<TMP_Text>() != null &&
         optionButtons[2].GetComponentInChildren<TMP_Text>() != null &&
         optionButtons[3].GetComponentInChildren<TMP_Text>() != null)
         {
+            // Set the text of each option button with the answer options
             optionButtons[0].GetComponentInChildren<TMP_Text>().text = question.AnswerOption1;
             optionButtons[1].GetComponentInChildren<TMP_Text>().text = question.AnswerOption2;
             optionButtons[2].GetComponentInChildren<TMP_Text>().text = question.AnswerOption3;
@@ -272,12 +272,13 @@ public class FetchQuestions : MonoBehaviour
         {
             button.onClick.RemoveAllListeners();
         }
-        
+        // Add listeners to handle the player's answer selection for each option
         optionButtons[0].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption1, question.CorrectAnswer, question.Id));
         optionButtons[1].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption2, question.CorrectAnswer, question.Id));
         optionButtons[2].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption3, question.CorrectAnswer, question.Id));
         optionButtons[3].onClick.AddListener(() => OnAnswerSelected(question.AnswerOption4, question.CorrectAnswer, question.Id));
     }
+
     public void OnAnswerSelected(string selectedAnswer, string correctAnswer, int questionId)
     {
         Errormsg.text = "";
@@ -314,7 +315,6 @@ public class FetchQuestions : MonoBehaviour
                 CountOfHousesText.text = "Well done! You've won a house! Keep going to conquer even more!\n" + "Number of your houses: " + CountOfHouses;
                 QuestionPanel2.SetActive(false);
                 DisplayNextUnansweredQuestion();  // Display the next question
-               // Debug.Log("Question transitioned, now ending the episode.");
             }
             else
             {
@@ -340,38 +340,49 @@ public class FetchQuestions : MonoBehaviour
 
     public float GetPlayerSuccessRate()
     {
-        if (totalQuestionsAnswered == 0) return 0.0f;  // Avoid division by zero
+        // Check if no questions have been answered to avoid division by zero
+        if (totalQuestionsAnswered == 0) return 0.0f;
+        // Calculate and return the player's success rate based on the number of first-attempt correct answers
         return (float)correctFirstAttemptCount / totalQuestionsAnswered;
     }
 
     // Update the player's score on the UI
     public void UpdateScoreText()
     {
+        // Update the score display in the UI
         scoreText.text ="Score:"+playerScore.ToString();
+        // Update the player's score in the PlayerData instance (possibly for saving or further use)
         PlayerData.Instance.Score = playerScore;
     }
 
     public QuestionModel GetCurrentQuestion()
     {
+        // Check if the list of questions is not null and the current index is within the bounds of the list
         if (questions != null && currentQuestionIndex < questions.Count)
         {
+            // Return the current question based on the index
             return questions[currentQuestionIndex];
         }
+        // Return null if there are no questions or the index is out of bounds
         return null;
     }
 
     // This method will check if the player's selected answer is correct
     public bool CheckIfAnswerCorrect(string selectedAnswer)
     {
+        // Check if the list of questions is not null and the current index is within bounds
         if (questions != null && currentQuestionIndex < questions.Count)
         {
+            // Return true if the selected answer matches the correct answer of the current question
             return selectedAnswer == questions[currentQuestionIndex].CorrectAnswer;
         }
+        // Return false if there are no questions or the index is out of bounds
         return false;
     }
     public string GetSelectedAnswer()
     {
-        return selectedAnswer; // Return the answer that was selected by the player
+        // Return the answer that was selected by the player
+        return selectedAnswer; 
     }
 
     // Call this method when the player selects an answer
@@ -442,14 +453,18 @@ public class FetchQuestions : MonoBehaviour
 
     public int GetCurrentQuestionId()
     {
+        // Returns the ID of the current question based on the current question index
         return questions[currentQuestionIndex].Id;
     }
 
     public string GetAnswerByAction(int action)
     {
+        // Check if the list of questions is not null and the current index is within the valid range
         if (questions != null && currentQuestionIndex < questions.Count)
         {
+            // Get the current question using the current index
             QuestionModel currentQuestion = questions[currentQuestionIndex];
+            // Use a switch statement to return the answer option based on the action parameter
             switch (action)
             {
                 case 0:
@@ -465,6 +480,7 @@ public class FetchQuestions : MonoBehaviour
                     return null;
             }
         }
+        // Return null if the questions list is null or the current index is out of range
         return null;
     }
 
@@ -504,7 +520,9 @@ public class FetchQuestions : MonoBehaviour
 
     public float GetTotalTimeSpent()
     {
+        // Initialize a variable to hold the total time spent
         float totalTime = 0.0f;
+        // Iterate over each time value in the 'questionTimes' list
         foreach (float time in questionTimes)
         {
             totalTime += time;

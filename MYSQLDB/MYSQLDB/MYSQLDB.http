@@ -1,5 +1,6 @@
+# Define the base URL for the API endpoint
 @MYSQLDB_HostAddress = http://localhost:5093
-
+# Send a GET request to the weatherforecast endpoint of the specified API
 GET {{MYSQLDB_HostAddress}}/weatherforecast/
 Accept: application/json
 

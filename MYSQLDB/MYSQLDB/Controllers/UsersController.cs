@@ -92,32 +92,6 @@ public class UsersController : ControllerBase
         // Return the list of questions along with their hints
         return Ok(questions);
     }
-
-    /* [HttpGet("getQuestion")]
-     public async Task<IActionResult> GetQuestion(int playerLevel)
-     {
-         // Get questions based on the player's level using the new recommended_level column
-         var questions = await _context.Questions
-                                       .Where(q => q.RecommendedLevel <= playerLevel)
-                                       .ToListAsync();
-
-         if (questions == null || questions.Count == 0)
-         {
-             return NotFound(new { Message = "No questions found for this level" });
-         }
-
-         // Optionally fetch hints for each question
-         foreach (var question in questions)
-         {
-             question.Hints = await _context.QuestionHints
-                                            .Where(h => h.QuestionId == question.Id)
-                                            .ToListAsync();
-         }
-
-         // Return the list of questions along with their hints
-         return Ok(questions);
-     }*/
-
     // POST: api/Users/recordAnswer
     [HttpPost("recordAnswer")]
     public async Task<IActionResult> RecordAnswer(int userId, int questionId, bool isCorrect)

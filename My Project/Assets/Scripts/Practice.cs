@@ -71,7 +71,6 @@ public class Practice : MonoBehaviour
     {
         // Display the player's name, score, and level on the screen
         playerNameText.text = $"Name: {PlayerData.Instance.playerName}";
-        //playerScoreText.text = $"Score: {PlayerData.Instance.Score}";
         playerLevelText.text = $"Level: {PlayerData.Instance.playerLevel}";
     }
 

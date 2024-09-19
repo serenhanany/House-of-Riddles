@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class QuestionModel
 {
-    public int Id { get; set; }
+    public int Id { get; set; } // Primary key
     public string QuestionText { get; set; }
     public string DifficultyLevel { get; set; }
     public string Category { get; set; }

@@ -22,14 +22,16 @@ public class LearningScreen : MonoBehaviour
             LoginButton.onClick.AddListener(LoginScene);
         }
     }
+    // Method to load the home page scene
     public void HomePageScene()
     {
         SceneManager.LoadScene("HomePage");
     }
+    // Method to load the Login page scene
     public void LoginScene()
     {
         SceneManager.LoadScene("Login");
     }
-    // Update is called once per frame
+  
 
 }

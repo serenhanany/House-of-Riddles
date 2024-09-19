@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class HouseInteraction2 : MonoBehaviour
 {
+    // Public fields to reference UI elements in the scene
     public GameObject QuestionPanel2;  // Reference to the panel in the scene
     public TMP_Text CountOfHousesText;
     
@@ -11,7 +13,7 @@ public class HouseInteraction2 : MonoBehaviour
 
     private void Start()
     {
-        // Ensure the cursor is always visible
+        // Ensure the cursor is visible and not locked when the scene starts
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
@@ -20,12 +22,20 @@ public class HouseInteraction2 : MonoBehaviour
 
     private void OnMouseDown()
     {
+        // Check if the house is locked
         if (isLocked)
         {
             if (QuestionPanel2 != null)
             {
                 QuestionPanel2.SetActive(true);
-                CountOfHousesText.text = "";
+                if (CountOfHousesText != null)
+                {
+                    CountOfHousesText.text = "";
+                }
+                else
+                {
+                    Debug.LogError("CountOfHousesText is not assigned in the Inspector!");
+                }
             }
             else
             {
@@ -37,13 +47,13 @@ public class HouseInteraction2 : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
     }
-
+    // Method to unlock the house, changing its state to unlocked
     public void UnlockHouse()
     {
         isLocked = false;
         Debug.Log(gameObject.name + " has been unlocked!");
     }
-
+    // Method to close the question panel
     public void ClosePanel()
     {
         if (QuestionPanel2 != null)
@@ -58,18 +68,4 @@ public class HouseInteraction2 : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
-
-    // Show the hint text when the button is clicked
-   /* private void ShowHint()
-    {
-        Debug.Log("Hint button clicked!");
-        if (TextForHint != null)
-        {
-            TextForHint.gameObject.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("TextForHint is not assigned in the Inspector!");
-        }
-    }*/
 }

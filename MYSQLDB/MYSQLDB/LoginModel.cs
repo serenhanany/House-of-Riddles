@@ -2,6 +2,7 @@
 
 namespace MYSQLDB
 {
+    //Login Model
     public class LoginModel
     {
         [Key]

@@ -8,27 +8,16 @@ using TMPro;
 using UnityEngine.SceneManagement;
 public class GameServer : NetworkManager
 {
+    // This method is called when the server starts
     public override void OnStartServer()
     {
         base.OnStartServer();
         Debug.Log("Server started...");
     }
-
+    // This method is called when the server stops
     public override void OnStopServer()
     {
         base.OnStopServer();
         Debug.Log("Server stopped...");
     }
-
-    /*public override void OnServerConnect(NetworkConnection conn)
-    {
-        base.OnServerConnect(conn);
-        Debug.Log("Client connected: " + conn.address);
-    }
-
-    public override void OnServerDisconnect(NetworkConnection conn)
-    {
-        base.OnServerDisconnect(conn);
-        Debug.Log("Client disconnected: " + conn.address);
-    }*/
 }

@@ -23,11 +23,12 @@ public class information : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Check if the startGamerButton is assigned and add a listener to start the game
         if (startGamerButton != null)
         {
             startGamerButton.onClick.AddListener(startGame);
         }
-        
+        // Check if PlayerData.Instance is initialized
         if (PlayerData.Instance != null)
         {
             
@@ -54,7 +55,7 @@ public class information : MonoBehaviour
         }
     }
 
-
+    // Method to start the game and load a new scene
     public void startGame()
     {
         SceneManager.LoadScene("Buildings 2");

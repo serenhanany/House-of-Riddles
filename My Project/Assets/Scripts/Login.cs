@@ -20,8 +20,9 @@ public class LoginScript : MonoBehaviour
 
     void Start()
     {
+        // Add listener to login button to start the login process
         loginButton.onClick.AddListener(() => StartCoroutine(LoginUser()));
-
+        // Add listeners to navigation buttons if they are assigned
         if (HomePageButton != null)
         {
             HomePageButton.onClick.AddListener(HomePageScene);
@@ -31,44 +32,46 @@ public class LoginScript : MonoBehaviour
             createAccountButton.onClick.AddListener(createAccountScene);
         }
     }
-
+    // Navigate to the create account scene
     public void createAccountScene()
     {
         SceneManager.LoadScene("Register");
     }
-
+    // Navigate to the home page scene
     public void HomePageScene()
     {
         SceneManager.LoadScene("HomePage");
     }
-
+    // Coroutine to handle user login
     IEnumerator LoginUser()
     {
+        // API endpoint for login
         string url = "https://localhost:7096/api/users/login";
         Debug.Log("Connecting to URL: " + url);
-        messageText.text = "";
+        messageText.text = "";// Clear any previous messages
 
         string username = usernameField.text;
         string password = passwordField.text;
 
+        // Check if fields are empty
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {
             messageText.text = "Please fill in all fields.";
             yield break;
         }
-
+        // Create a LoginModel object with the username and password
         LoginModel login = new LoginModel { Username = username, Password = password };
         string json = JsonUtility.ToJson(login);
         Debug.Log("JSON to be sent: " + json);
-
+        // Create a new UnityWebRequest for a POST request
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
-
+        // Send the request and wait for the response
         yield return request.SendWebRequest();
-
+        // Handle different types of responses
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError("Error: " + request.error);
@@ -115,20 +118,20 @@ public class LoginScript : MonoBehaviour
         }
     }
 }
-
+// Data model for login request
 [System.Serializable]
 public class LoginModel
 {
     public string Username;
     public string Password;
 }
-
+// Data model for login response
 [System.Serializable]
 public class LoginResponse
 {
     public int UserId;
     public string Username;
     public int Level;
-    public string Message;  // If you want to handle the message as well
+    public string Message;  
 }
 

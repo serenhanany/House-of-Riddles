@@ -28,11 +28,6 @@ public class test : MonoBehaviour
     private HashSet<int> answeredQuestionIds = new HashSet<int>();
     private string apiUrl = "https://localhost:7096/api/users";
     public GameObject QuestionPanel2;
-    //public int predefinedLevel = 1;
-    // currentQuestionIndex = questions[currentQuestionIndex].Id;
-    // Reference to the HintAgent
-    // public HintAgent hintAgent;
-    // public RLTrainingScript trainingScript;
     void Start()
     {
         Cursor.visible = true;
@@ -224,13 +219,7 @@ public class test : MonoBehaviour
                 {
                     answeredQuestionIds.Add(questionId);
                 }
-                /*
-                if (hintAgent != null)
-                {
-                    hintAgent.AddReward(1.0f); // Reward the agent for a correct answer
-                    hintAgent.EndEpisode(); // End the current episode for the agent
-                }
-                */
+             
                 currentQuestionIndex++; // Move to the next question only if answered correctly
             InCorrect.text = "";
             QuestionPanel2.SetActive(false);
@@ -238,13 +227,7 @@ public class test : MonoBehaviour
 
         }
             else
-            {/*
-                if (hintAgent != null)
-                {
-                    hintAgent.AddReward(-1.0f); // Penalize the agent for an incorrect answer
-                    hintAgent.EndEpisode(); // End the current episode for the agent
-                }*/
-
+            {
             // Optionally provide feedback or keep the current question
               InCorrect.text="In Correct Answer, Try again";
             Debug.Log("Incorrect answer. Try again!");
@@ -260,22 +243,7 @@ public class test : MonoBehaviour
             }
         }
 
-        /*void ShuffleQuestions()
-        {
-            if (questions == null || questions.Count == 0)
-            {
-                Debug.LogError("No questions available to shuffle.");
-                return;
-            }
-
-            for (int i = 0; i < questions.Count; i++)
-            {
-                QuestionModel temp = questions[i];
-                int randomIndex = Random.Range(i, questions.Count);
-                questions[i] = questions[randomIndex];
-                questions[randomIndex] = temp;
-            }
-        }*/
+       
     }
 
     [System.Serializable]

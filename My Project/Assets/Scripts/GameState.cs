@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+// Class representing the game state for a specific puzzle
 public class GameState
 {
+    // Properties of the GameState class
     public int PuzzleID { get; set; }
     public int Attempts { get; set; }
     public bool HintUsed { get; set; }
-
+    // Constructor to initialize a new GameState object
     public GameState(int puzzleID, int attempts, bool hintUsed)
     {
         PuzzleID = puzzleID;
@@ -31,7 +32,7 @@ public class GameState
         return (PuzzleID, Attempts, HintUsed).GetHashCode();
     }
 }
-
+// Enumeration representing the different hint actions a player can take
 public enum HintAction
 {
     NoHint,

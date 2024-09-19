@@ -34,7 +34,5 @@ public class UserContext : DbContext
         modelBuilder.Entity<HintModel>().Property(h => h.HintText).HasColumnName("hint_text");
         modelBuilder.Entity<HintModel>().Property(h => h.QuestionId).HasColumnName("question_id");
         modelBuilder.Entity<HintModel>().Property(h => h.HintLevel).HasColumnName("hint_level");
-
-        // Additional configurations can be added here if needed
     }
 }
