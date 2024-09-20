@@ -20,6 +20,8 @@ public class RegisterScript : MonoBehaviour
 
     void Start()
     {
+        passwordField.contentType = TMP_InputField.ContentType.Password;
+        passwordField.ForceLabelUpdate();
         // Check if all fields are assigned in the Inspector
         if (fullnameField == null || usernameField == null || passwordField == null || emailField == null || registerButton == null || messageText == null)
         {

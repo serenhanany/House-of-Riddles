@@ -20,6 +20,8 @@ public class LoginScript : MonoBehaviour
 
     void Start()
     {
+        passwordField.contentType = TMP_InputField.ContentType.Password;
+        passwordField.ForceLabelUpdate();
         // Add listener to login button to start the login process
         loginButton.onClick.AddListener(() => StartCoroutine(LoginUser()));
         // Add listeners to navigation buttons if they are assigned
